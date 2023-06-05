@@ -25,7 +25,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = strtobool(os.getenv('DEBUG_FLAG'))
 
 if DEBUG:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = [
+        'www.visualiching.com',
+        'visualiching.com',
+        'visualiching.herokuapp.com',
+        '.localhost', 
+        '127.0.0.1', 
+        '[::1]'
+    ]
 else:
     ALLOWED_HOSTS = [
         'www.visualiching.com',

@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_URL = os.getenv('DATABASE_URL')
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = strtobool(os.getenv('DEBUG_FLAG'))
+WORKING_ENV = os.getenv('WORKING_ENV').lower()
 
 if DEBUG:
     ALLOWED_HOSTS = [
@@ -145,3 +146,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'notifications@visualiching.com'
+
+if WORKING_ENV == 'dev':
+    SECURE_SSL_REDIRECT = False
+else:
+    SECURE_SSL_REDIRECT = True

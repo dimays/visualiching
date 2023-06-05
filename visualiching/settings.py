@@ -33,16 +33,6 @@ else:
         'visualiching.herokuapp.com'
     ]
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-
-
-
-
-# Application definition
-
 INSTALLED_APPS = [
     'visual_i_ching_app',
     'users_app',
@@ -65,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'visualiching_project.middleware.heroku_redirect_middleware.HerokuRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'visualiching.urls'

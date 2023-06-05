@@ -286,7 +286,7 @@ class LineType(models.Model):
         db_table_comment = "A record for each type of line possible in an I Ching reading (ie. Old/Young Yin/Yang)"
 
     def __str__(self):
-        str_rep = f"Line Type | {self.name} ({self.symbol})"
+        str_rep = f"Line Type | {self.name} ({self.line_value})"
         return str_rep
 
 

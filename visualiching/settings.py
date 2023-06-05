@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'visualiching_project.middleware.heroku_redirect_middleware.HerokuRedirectMiddleware',
+    'visualiching.middleware.heroku_redirect_middleware.HerokuRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'visualiching.urls'

@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auto_logout.middleware.auto_logout',
     'visualiching.middleware.heroku_redirect_middleware.HerokuRedirectMiddleware',
 ]
 
@@ -79,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_auto_logout.context_processors.auto_logout_client',
             ],
         },
     },
@@ -151,3 +153,9 @@ if WORKING_ENV == 'dev':
     SECURE_SSL_REDIRECT = False
 else:
     SECURE_SSL_REDIRECT = True
+
+AUTO_LOGOUT = {
+    'IDLE_TIME': 3600, # logout after 1 hour of inactivity
+    'MESSAGE': 'You have been automatically logged out, please login again.',
+    'REDIRECT_TO_LOGIN_IMMEDIATELY': True, # refresh page if browser window open
+}

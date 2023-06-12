@@ -61,7 +61,7 @@ class Trigram(models.Model):
     inner_world_season = models.CharField(
         max_length=30,
         db_comment="Seasonal representation of this trigram in the Inner-World Arrangement"
-    )
+        )
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_comment="Time (in UTC) at which this record was created"
@@ -80,6 +80,7 @@ class Trigram(models.Model):
     class Meta:
         db_table = "trigrams"
         db_table_comment = "A record for each unique trigram"
+        ordering = ['trigram_id']
 
     def __str__(self):
         str_rep = f"Trigram {self.trigram_id} | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
@@ -184,6 +185,7 @@ class Hexagram(models.Model):
     class Meta:
         db_table = "hexagrams"
         db_table_comment = "A record for each unique hexagram"
+        ordering = ['hexagram_id']
 
     def __str__(self):
         str_rep = f"Hexagram {self.hexagram_id} | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
@@ -238,6 +240,7 @@ class HexagramLine(models.Model):
     def __str__(self):
         str_rep = f"Hexagram Line {self.hexagram.hexagram_id}.{self.position} | {self.hexagram.english_translation}, line {self.position}"
         return str_rep
+    ordering = ['hexagram_id', '-position']
 
 
 class LineType(models.Model):
@@ -315,37 +318,37 @@ class Reading(models.Model):
         on_delete=models.PROTECT,
         related_name='first_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the first (bottom) line of this hexagram"
-    )
+        )
     second_line_type = models.ForeignKey(
         LineType,
         on_delete=models.PROTECT,
         related_name='second_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the second line of this hexagram"
-    )
+        )
     third_line_type = models.ForeignKey(
         LineType,
         on_delete=models.PROTECT,
         related_name='third_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the third line of this hexagram"
-    )
+        )
     fourth_line_type = models.ForeignKey(
         LineType,
         on_delete=models.PROTECT,
         related_name='fourth_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the fourth line of this hexagram"
-    )
+        )
     fifth_line_type = models.ForeignKey(
         LineType,
         on_delete=models.PROTECT,
         related_name='fifth_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the fifth line of this hexagram"
-    )
+        )
     sixth_line_type = models.ForeignKey(
         LineType,
         on_delete=models.PROTECT,
         related_name='sixth_line_type_ids',
         db_comment="Foreign key, references line_types.line_type_id, represents the type of the sixth (top) line of this hexagram"
-    )
+        )
     prompt = models.TextField(
         db_comment="User-entered prompt for this reading"
         )
@@ -367,6 +370,7 @@ class Reading(models.Model):
     class Meta:
         db_table = "readings"
         db_table_comment = "A record for each reading prepared by a user"
+        ordering = ['user', '-created_at']
 
     def __str__(self):
         str_rep = f"{self.user.username}'s Reading: {self.prompt}"

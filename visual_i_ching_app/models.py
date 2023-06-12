@@ -82,7 +82,7 @@ class Trigram(models.Model):
         db_table_comment = "A record for each unique trigram"
 
     def __str__(self):
-        str_rep = f"Trigram | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
+        str_rep = f"Trigram {self.trigram_id} | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
         return str_rep
     
 
@@ -186,7 +186,7 @@ class Hexagram(models.Model):
         db_table_comment = "A record for each unique hexagram"
 
     def __str__(self):
-        str_rep = f"Hexagram | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
+        str_rep = f"Hexagram {self.hexagram_id} | {self.chinese_character} ('{self.pinyin_romanization}'): {self.english_translation}"
         return str_rep
     
 
@@ -240,7 +240,7 @@ class HexagramLine(models.Model):
         db_table_comment = "A record for each line within each hexagram"
 
     def __str__(self):
-        str_rep = f"Hexagram Line | {self.hexagram.english_translation}, line {self.position}"
+        str_rep = f"Hexagram Line {self.hexagram.hexagram_id}.{self.position} | {self.hexagram.english_translation}, line {self.position}"
         return str_rep
 
 

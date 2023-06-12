@@ -210,10 +210,6 @@ class HexagramLine(models.Model):
     is_governing_ruler = models.BooleanField(
         db_comment="TRUE if this line is the governing ruler of its hexagram"
         )
-    monogram_symbol = models.CharField(
-        max_length=1,
-        db_comment="Unicode representation of the monogram"
-        )
     change_text = models.TextField(
         db_comment="English translation of the written interpretation of this line's change"
         )

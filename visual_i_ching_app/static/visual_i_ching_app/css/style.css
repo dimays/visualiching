@@ -1,0 +1,10 @@
+.serif-text {
+    font-family: 'Playfair Display', serif;
+}
+
+#carouselHexagrams .carousel-item img {
+    object-fit: cover;
+    object-position: center;
+    height: 40vh;
+    overflow: hidden;
+}

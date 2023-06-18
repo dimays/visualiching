@@ -1,0 +1,160 @@
+{% extends 'visual_i_ching_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1 class="display-2 serif-text">VisualIChing</h1>
+        <p>VisualIChing is dedicated to providing an immersive and enlightening experience with the ancient oracle known as the I Ching. This interactive website offers a visually engaging exploration of this profound divination tool, empowering individuals to gain insights and guidance for their life's journey.</p>
+    </div>
+    <div class="container my-5">
+        {% if not user.is_authenticated %}
+        <div class="row">
+            <h1 class="serif-text">Embark on a Journey of Self-Discovery</h1>
+            <p>VisualIChing invites you to embark on a journey of self-discovery, exploring the timeless wisdom of the I Ching through an interactive and visually captivating experience. May the profound insights of this ancient oracle inspire and guide you as you navigate the ever-changing currents of life.</p>
+            <p>Begin your exploration of the I Ching with VisualIChing today and uncover the deep well of wisdom that awaits you.</p>
+            <div class="text-center my-5">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Sign Up For Free</a>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div id="carouselHexagrams" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for hexagram in hexagrams %}
+                    {% if hexagram.hexagram_id == 1 %}
+                        <div class="carousel-item active">
+                    {% else %}
+                        <div class="carousel-item">        
+                    {% endif %}
+                            <img src="{% static hexagram.image_url %}" class="d-block w-100" alt="image of hexagram '{{ hexagram.english_translation }}">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h1>{{ hexagram.chinese_character }}</h1>
+                                <h3 class="serif-text">{{ hexagram.english_translation }}</h3>
+                                <h1>{{ hexagram.hexagram_symbol }}</h1>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="text-center text-secondary my-1"><small>unique watercolor paintings for each hexagram</small></p>
+        </div>
+        <div class="row mt-5">
+            <h2 class="serif-text">
+                AI-Assisted Interpretations
+            </h2>
+            <h3 class="text-center my-3"><span class="badge bg-success">Coming Soon!</span></h3>
+            <p>VisualIChing also offers AI-Assisted interpretations to enhance your readings. With our AI technology, you can gain additional insights and perspectives for a deeper understanding of your hexagram. We offer a flexible credit system for accessing these AI interpretations:</p>
+        </div>
+        <div class="row mx-5">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Credit Bundle</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">Cost Per Credit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1 Credit</td>
+                    <td>$1</td>
+                    <td>$1</td>
+                  </tr>
+                  <tr>
+                    <td>10 Credits</td>
+                    <td>$5</td>
+                    <td>$0.50</td>
+                  </tr>
+                  <tr>
+                    <td>50 Credits</td>
+                    <td>$10</td>
+                    <td>$0.20</td>
+                  </tr>
+                  <tr>
+                    <td>200 Credits</td>
+                    <td>$20</td>
+                    <td>$0.10</td>
+                  </tr>
+                  <tr>
+                    <td>1,000 Credits</td>
+                    <td>$50</td>
+                    <td>$0.05</td>
+                  </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
+    <div class="container my-5">
+        <h2 class="serif-text">Brief History of the I Ching</h2>
+        <p>The I Ching, also known as the Book of Changes, is an ancient Chinese divination text with a rich history spanning over two millennia. Its origins can be traced back to the Zhou dynasty (1046-256 BCE) in China. According to legend, the I Ching was compiled by the legendary sage King Wen and his son, the Duke of Zhou. It was later expanded upon by Confucius, who added commentaries to the hexagrams. The I Ching draws upon the principles of yin and yang and the concept of the Tao, offering a profound understanding of the dynamic interplay of opposites and the natural cycles of change.</p>
+        <p>The I Ching has had a significant impact on Western culture, particularly since its translation and introduction to the West in the 19th century. Its profound wisdom and universal principles have fascinated scholars, philosophers, and artists alike. In the realm of philosophy, influential thinkers such as Carl Jung and Wilhelm Reich drew upon the I Ching to explore the depths of the human psyche and the collective unconscious. Its concepts of balance, harmony, and transformation resonated with Western intellectuals seeking alternative perspectives on existence and the nature of reality.</p>
+        <p>Moreover, the I Ching has found a place in various artistic expressions. Its symbols and archetypes have inspired writers, poets, and visual artists, shaping their creative endeavors. The I Ching's profound insights into the nature of change and the interconnectedness of all things have provided a foundation for contemplation and personal growth in Western spiritual and self-development practices. Today, the I Ching continues to be valued as a source of wisdom, guidance, and inspiration, with its teachings applied to diverse fields such as psychology, business strategy, and personal development.</p>
+        <p>As the I Ching continues to transcend cultural boundaries, its timeless wisdom remains a source of contemplation and insight for individuals seeking a deeper understanding of themselves and the world around them.</p>
+    </div>
+    <div class="container my-5">
+        <h2 class="serif-text">Traditional Forms of Consulting the Oracle</h2>
+        <p>The I Ching offers two primary methods for consulting the oracle: the coin method and the yarrow stalk method. Both techniques provide a systematic approach to generating the hexagram that reflects your current situation or question. Choose the method that resonates with you and follow the step-by-step instructions below.</p>
+        <h3 class="serif-text">Coin Method</h3>
+        <p>The coin oracle is a simplified method within the I Ching divination system, utilizing three coins to generate hexagrams. It originated in ancient China as an alternative to the yarrow stalk method. By tossing the coins and recording the results as heads or tails, a six-line hexagram pattern is formed, providing guidance and insights. This accessible approach has made the coin oracle a widely used practice in consulting the I Ching for wisdom and direction in various aspects of life.</p>
+        <p><b>Follow these steps to consult the I Ching using coins:</b></p>
+        <ol class="list-group list-group-numbered my-3">
+            <li class="list-group-item border-0">Gather three coins of the same denomination and clear your mind, focusing on your question or the situation at hand.</li>
+            <li class="list-group-item border-0">Assign numerical values to the coins. For example, heads can represent 3 and tails can represent 2. Alternatively, you can assign heads as 2 and tails as 3.</li>
+            <li class="list-group-item border-0">Hold the three coins in your hand and shake them gently, allowing them to stack upon each other.</li>
+            <li class="list-group-item border-0">Toss the coins onto a flat surface, such as a table or a cloth, and take note of the results. Record the values that are facing up.</li>
+            <li class="list-group-item border-0">Repeat steps 3 and 4 five more times, for a total of six coin tosses. This will generate the values of the six lines of your hexagram, starting from the bottom.</li>
+        </ol>
+        <h3 class="serif-text">Yarrow Stalk Method</h3>
+        <p>The yarrow stalk method is an ancient technique used to consult the I Ching, an influential Chinese divination text. It involves the use of 50 yarrow stalks, with one stalk set aside. This method has historical significance as it reflects the traditional practices of ancient China. The choice of yarrow stalks is rooted in the belief that they possess natural qualities aligned with the principles of yin and yang. By following a specific process of counting and arranging the stalks, meaningful hexagrams are formed, providing guidance and insight. The yarrow stalk method is valued for its historical authenticity and the deeper connections it fosters with the ancient wisdom of the I Ching.</p>
+        <p><b>Follow these steps to consult the I Ching using yarrow stalks:</b></p>
+        <ol class="list-group list-group-numbered my-3">
+            <li class="list-group-item border-0">Gather 50 yarrow stalks and set one stalk aside. This stalk will not be used in the process.</li>
+            <li class="list-group-item border-0">Mix the remaining 49 yarrow stalks together and divide them into two roughly equal heaps randomly.</li>
+            <li class="list-group-item border-0">Take one stalk from the right-hand heap and place it between the ring finger and the little finger of your left hand.</li>
+            <li class="list-group-item border-0">Hold the left-hand heap in your left hand and count off the stalks in bundles of four until you have four or fewer stalks remaining.</li>
+            <li class="list-group-item border-0">Take the remaining stalks and place them between the ring finger and the middle finger of your left hand.</li>
+            <li class="list-group-item border-0">Count off the stalks in the right-hand heap by fours and place the remainder between the middle finger and the forefinger of your left hand.</li>
+            <li class="list-group-item border-0">Add up the total number of stalks held between the fingers of your left hand. It will either be 9 or 5.</li>
+            <li class="list-group-item border-0">If the total is 9, consider it as 8. If the total is 5, consider it as 4.</li>
+            <li class="list-group-item border-0">Set aside these stalks for the time being.</li>
+            <li class="list-group-item border-0">Gather the remaining stalks and divide them again as before.</li>
+            <li class="list-group-item border-0">Take a stalk from the right-hand heap and place it between the ring finger and the little finger of your left hand.</li>
+            <li class="list-group-item border-0">Count off the stalks as you did previously.</li>
+            <li class="list-group-item border-0">The total of the remainders will either be 8 or 4.</li>
+            <li class="list-group-item border-0">If the total is 8, consider it as 2. If the total is 4, consider it as 3.</li>
+            <li class="list-group-item border-0">Repeat the process a third time with the remaining stalks.</li>
+            <li class="list-group-item border-0">The total of the remainders will again be 8 or 4.</li>
+            <li class="list-group-item border-0">From the numerical values assigned to each set of remainders, determine the line that will be formed.</li>
+            <ul class="list-group-item list-group list-group-flush border-0">
+                <li class="list-group-item border-0">If the sum is 5 + 4 + 4, the resulting numerical value is 9 (old yang).</li>
+                <li class="list-group-item border-0">If the sum is 9 + 8 + 8, the final value is 6 (old yin).</li>
+                <li class="list-group-item border-0">If the sum is 9 + 8 + 4, 5 + 8 + 8, or 9 + 4 + 8, the value is 7 (young yang).</li>
+                <li class="list-group-item border-0">If the sum is 9 + 4 + 4, 5 + 4 + 8, or 5 + 8 + 4, the value is 8 (young yin).</li>
+            </ul>
+            <li class="list-group-item border-0">Repeat this entire process six times to build up a hexagram of six lines, starting from the bottom.</li>
+        </ol>
+    </div>
+    <div class="container my-5">
+        <h3 class="serif-text">Interpreting the Situation</h3>
+        <p>Once you have generated the hexagram, it is essential to interpret its meaning in the context of your question or situation. Follow these general steps to gain insight into the message of the oracle:</p>
+        <ol class="list-group list-group-numbered my-3">
+            <li class="list-group-item border-0">Identify the hexagram formed by the six lines. This is the initial hexagram and represents the current situation or question.</li>
+            <li class="list-group-item border-0">Study the specific characteristics of the hexagram, such as the trigrams (upper and lower sets of three lines) and any changing lines.</li>
+            <li class="list-group-item border-0">If there are changing lines present, take note of their positions within the hexagram and their relationships to one another.</li>
+            <li class="list-group-item border-0">Refer to the I Ching text or interpretations for each line and understand the significance of the specific line's nature (solid or broken).</li>
+            <li class="list-group-item border-0">Pay attention to any changing lines. These lines indicate changing aspects of the situation and offer deeper, specific insights.</li>
+            <li class="list-group-item border-0">Determine the hexagram that results from the changing lines. This hexagram represents the potential outcome or direction to consider.</li>
+            <li class="list-group-item border-0">Study the resulting hexagram's interpretation and reflect on its relevance to your question or situation.</li>
+        </ol>
+        <p>Remember, the I Ching provides guidance, but it is up to you to apply this wisdom and make your own decisions based on your unique circumstances. Trust your intuition and let the I Ching be a source of insight and illumination as you navigate the paths of life.</p>
+    </div>
+    <div class="container my-5">
+        <h2 class="serif-text">Guidance and Personal Responsibility</h2>
+        <p>The I Ching provides profound guidance and wisdom, acting as a compass for navigating the complexities of life. However, it is important to recognize that each individual bears the responsibility to interpret and apply this guidance in their own unique context. The I Ching serves as a guide, illuminating paths and possibilities, but the ultimate decisions and actions reside with each individual.</p>
+    </div>
+    <div class="container my-5">
+        <h2 class="serif-text">Sources</h2>
+        <p>The written content on VisualIChing has been adapted from the renowned Wilhelm-Baynes translation of the I Ching. We have taken care to preserve the essence and wisdom of the original text while making certain adaptations to promote inclusivity and accessibility. In some instances, we have paraphrased passages, and we have replaced male pronouns with gender-neutral language when it does not interfere with the metaphor employed by the author. Our goal is to honor the integrity of the text while fostering an inclusive environment for all.</p>
+        <p>The visual elements on VisualIChing were generated using Dall-E 2, based on the written content for each hexagram and trigram.</p>
+    </div>
+{% endblock %}

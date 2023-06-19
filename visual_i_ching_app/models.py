@@ -141,6 +141,11 @@ class Hexagram(models.Model):
         max_length=100,
         db_comment="URL path to the 'Dall-E 2'-generated image for this hexagram"
         )
+    binary_value_string = models.CharField(
+        max_length=6,
+        default='000000',
+        db_comment="The values of each line represented as a string, ordered bottom to top (eg. '011001')"
+        )
     description = models.TextField(
         db_comment="Description of this hexagram"
         )
@@ -266,6 +271,10 @@ class LineType(models.Model):
     line_value = models.SmallIntegerField(
         db_comment="Represents the value that corresponds with this line type (6-9) as it relates to consulting the oracle with coins or yarrow stalks"
         )
+    binary_value = models.SmallIntegerField(
+        db_comment="Represents the binary value (0=yin, 1=yang) that corresponds with this line type as it relates to consulting the oracle with coins or yarrow stalks",
+        default=0
+        )
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_comment="Time (in UTC) at which this record was created"
@@ -314,41 +323,10 @@ class Reading(models.Model):
         related_name='resulting_hexagram_ids',
         db_comment="Foreign key, references hexgrams.hexagram_id, represents the hexagram that results from the changes in this reading (if there are no changes, this value is null)"
         )
-    first_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='first_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the first (bottom) line of this hexagram"
-        )
-    second_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='second_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the second line of this hexagram"
-        )
-    third_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='third_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the third line of this hexagram"
-        )
-    fourth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='fourth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the fourth line of this hexagram"
-        )
-    fifth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='fifth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the fifth line of this hexagram"
-        )
-    sixth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='sixth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the sixth (top) line of this hexagram"
+    value_string = models.CharField(
+        max_length=6,
+        default='888888',
+        db_comment="The values of each line represented as a string, ordered bottom to top (eg. '677869')"
         )
     prompt = models.TextField(
         db_comment="User-entered prompt for this reading"

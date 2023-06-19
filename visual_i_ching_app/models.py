@@ -317,6 +317,7 @@ class Reading(models.Model):
         )
     resulting_hexagram = models.ForeignKey(
         Hexagram,
+        blank=True,
         null=True,
         default=None,
         on_delete=models.PROTECT,

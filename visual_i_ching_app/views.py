@@ -87,11 +87,11 @@ def my_readings(request):
     }
     return render(request, 'visual_i_ching_app/my_readings.html', context)
 
-def view_reading(request, reading_id, user_id):
-    if request.user.id != user_id:
+def view_reading(request, reading_id):
+    reading = get_object_or_404(Reading, reading_id=reading_id)
+    if request.user.id != reading.user.id:
         raise PermissionDenied
 
-    reading = get_object_or_404(Reading, reading_id=reading_id, user_id=user_id)
     context = {
         "reading": reading
     }

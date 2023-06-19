@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container my-5">
-        <h1 class="display-2 serif-text">VisualIChing</h1>
+        <h1 class="display-4 serif-text">About VisualIChing</h1>
         <p>VisualIChing is dedicated to providing an immersive and enlightening experience with the ancient oracle known as the I Ching. This interactive website offers a visually engaging exploration of this profound divination tool, empowering individuals to gain insights and guidance for their life's journey.</p>
     </div>
     <div class="container my-5">
@@ -27,7 +27,7 @@
                         <div class="carousel-item">        
                     {% endif %}
                             <img src="{% static hexagram.image_url %}" class="d-block w-100" alt="image of hexagram '{{ hexagram.english_translation }}">
-                            <div class="carousel-caption d-none d-md-block">
+                            <div class="carousel-caption d-block">
                                 <h1>{{ hexagram.chinese_character }}</h1>
                                 <h3 class="serif-text">{{ hexagram.english_translation }}</h3>
                                 <h1>{{ hexagram.hexagram_symbol }}</h1>
@@ -36,22 +36,29 @@
                     {% endfor %}
                 </div>
             </div>
-            <p class="text-center text-secondary my-1"><small>unique watercolor paintings for each hexagram</small></p>
+            <p class="text-center text-secondary my-1"><small>a unique watercolor painting for each hexagram</small></p>
         </div>
         <div class="row mt-5">
-            <h2 class="serif-text">
-                AI-Assisted Interpretations
-            </h2>
-            <h3 class="text-center my-3"><span class="badge bg-success">Coming Soon!</span></h3>
-            <p>VisualIChing also offers AI-Assisted interpretations to enhance your readings. With our AI technology, you can gain additional insights and perspectives for a deeper understanding of your hexagram. We offer a flexible credit system for accessing these AI interpretations:</p>
+            <h3 class="serif-text">Free Account Forever</h3>
+            <p>With your free account, you can easily create visual readings, take your own notes on the details of the reading, and save it all to your account for future reference at any time.</p>
+            <h3 class="serif-text">Premium AI Technology</h3>
+            <p>Additionally, you can always purchase Credits, which can be used to generate <b>AI-assisted interpretations</b> of any reading you've saved. Each Credit grants you one AI-assisted interpretation, which includes:</p>
+            <ol class="list-group-item list-group list-group-numbered border-0 mb-3">
+                <li class="list-group-item border-0">A concise, personalized summary of the entire Situation as it applies to the prompt you entered for the reading</li>
+                <li class="list-group-item border-0">Details on how the initial Hexagram is considered in this interpretation, including its component trigrams</li>
+                <li class="list-group-item border-0">Details on how each changing line is considered in this interpretation</li>
+                <li class="list-group-item border-0">Details on how the resulting Hexagram is considered in this interpretation, including its component trigrams</li>
+            </ol>
+            <h3 class="serif-text">Flexible Pricing</h3>
+            <p>We offer a flexible credit system for accessing these AI interpretations:</p>
         </div>
-        <div class="row mx-5">
+        <div class="row mx-md-5 mx-2">
             <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">Credit Bundle</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Cost Per Credit</th>
+                    <th scope="col">Credit Bundle (# of AI Interpretations)</th>
+                    <th scope="col">Cost for Bundle</th>
+                    <th scope="col">Cost per Credit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,7 +88,13 @@
                     <td>$0.05</td>
                   </tr>
                 </tbody>
-              </table>
+            </table>
+            {% if user.is_authenticated %}
+            <p class="text-center">You currently have {{ current_credits }}.</p>
+            <div class="text-center">
+                <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">{{ purchase_btn_text }}</a>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="container my-5">
@@ -94,7 +107,7 @@
     <div class="container my-5">
         <h2 class="serif-text">Traditional Forms of Consulting the Oracle</h2>
         <p>The I Ching offers two primary methods for consulting the oracle: the coin method and the yarrow stalk method. Both techniques provide a systematic approach to generating the hexagram that reflects your current situation or question. Choose the method that resonates with you and follow the step-by-step instructions below.</p>
-        <h3 class="serif-text">Coin Method</h3>
+        <h4 class="serif-text">Coin Method</h4>
         <p>The coin oracle is a simplified method within the I Ching divination system, utilizing three coins to generate hexagrams. It originated in ancient China as an alternative to the yarrow stalk method. By tossing the coins and recording the results as heads or tails, a six-line hexagram pattern is formed, providing guidance and insights. This accessible approach has made the coin oracle a widely used practice in consulting the I Ching for wisdom and direction in various aspects of life.</p>
         <p><b>Follow these steps to consult the I Ching using coins:</b></p>
         <ol class="list-group list-group-numbered my-3">
@@ -104,7 +117,7 @@
             <li class="list-group-item border-0">Toss the coins onto a flat surface, such as a table or a cloth, and take note of the results. Record the values that are facing up.</li>
             <li class="list-group-item border-0">Repeat steps 3 and 4 five more times, for a total of six coin tosses. This will generate the values of the six lines of your hexagram, starting from the bottom.</li>
         </ol>
-        <h3 class="serif-text">Yarrow Stalk Method</h3>
+        <h4 class="serif-text">Yarrow Stalk Method</h4>
         <p>The yarrow stalk method is an ancient technique used to consult the I Ching, an influential Chinese divination text. It involves the use of 50 yarrow stalks, with one stalk set aside. This method has historical significance as it reflects the traditional practices of ancient China. The choice of yarrow stalks is rooted in the belief that they possess natural qualities aligned with the principles of yin and yang. By following a specific process of counting and arranging the stalks, meaningful hexagrams are formed, providing guidance and insight. The yarrow stalk method is valued for its historical authenticity and the deeper connections it fosters with the ancient wisdom of the I Ching.</p>
         <p><b>Follow these steps to consult the I Ching using yarrow stalks:</b></p>
         <ol class="list-group list-group-numbered my-3">
@@ -154,7 +167,7 @@
     </div>
     <div class="container my-5">
         <h2 class="serif-text">Sources</h2>
-        <p>The written content on VisualIChing has been adapted from the renowned Wilhelm-Baynes translation of the I Ching. We have taken care to preserve the essence and wisdom of the original text while making certain adaptations to promote inclusivity and accessibility. In some instances, we have paraphrased passages, and we have replaced male pronouns with gender-neutral language when it does not interfere with the metaphor employed by the author. Our goal is to honor the integrity of the text while fostering an inclusive environment for all.</p>
-        <p>The visual elements on VisualIChing were generated using Dall-E 2, based on the written content for each hexagram and trigram.</p>
+        <p>The written content on this website was adapted from the renowned Wilhelm-Baynes translation of the I Ching. We have taken care to preserve the essence and wisdom of the original text while making certain adaptations to promote inclusivity and accessibility. In some instances, we have paraphrased passages, and we have replaced male pronouns with gender-neutral language when it does not interfere with the metaphor employed by the author. Our goal is to honor the integrity of the text while fostering an inclusive environment for all.</p>
+        <p>The visual elements on this website were generated using Dall-E 2, based on the written content for each hexagram and trigram and further edited by the VisualIChing team.</p>
     </div>
 {% endblock %}

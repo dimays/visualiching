@@ -1,9 +1,7 @@
 {% extends 'visual_i_ching_app/base.html' %}
 {% block content %}
-    <h2>You have been logged out</h2>
-    <div class="pt-3">
-        <small class="text-muted">
-            <a href="{% url 'login' %}">Log In Again</a>
-        </small>
+    <h4 class="serif-text">You have been successfully logged out</h4>
+    <div class="text-center my-5">
+        <a href="{% url 'login' %}" class="btn btn-primary">Log In Again</a>
     </div>
 {% endblock content%}

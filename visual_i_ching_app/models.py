@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 
+
 class Trigram(models.Model):
     trigram_id = models.BigAutoField(
         primary_key=True,
@@ -352,6 +353,18 @@ class Reading(models.Model):
     prompt = models.TextField(
         db_comment="User-entered prompt for this reading"
         )
+    user_notes = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Optional field that allows users to enter their own notes on this reading"
+        )
+    gpt_interpretation = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Optional field resulting from the user generating an AI Interpretation for this reading"
+        )
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_comment="Time (in UTC) at which this record was created"
@@ -374,4 +387,93 @@ class Reading(models.Model):
 
     def __str__(self):
         str_rep = f"{self.user.username}'s Reading: {self.prompt}"
+        return str_rep
+    
+
+class UserDetail(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
+        )
+    current_credits = models.IntegerField(
+        db_comment="Represents this user's current number of credits available (1 credit can be exchanged for 1 AI-assisted interpretation on a reading)"
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+
+    class Meta:
+        db_table = "user_details"
+        db_table_comment = "A record for each user, with columns for different user-level details, always meant to represent the user's current state"
+        ordering = ['user', '-updated_at']
+
+    def __str__(self):
+        str_rep = f"{self.user.username}'s Details ({self.current_credits} credits)"
+        return str_rep
+
+
+class UserCreditHistory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
+        )
+    history_type = models.TextField(
+        db_comment="String indicating the type of credit event this record represents (eg. 'Purchase', 'Redemption', etc.)"
+        )
+    credits_amount = models.IntegerField(
+        db_comment="Integer representing the number of credits added to or deducted from the user's account"
+        )
+    stripe_payment_intent_id = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Only populated for 'Purchase' records, indicating the Stripe Payment Intent related to this credit bundle purchase"
+        )
+    credits_bundle_name = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Only populated for 'Purchase' records, indicating the name of the item purchased (eg. '$5 for 10')"
+        )
+    payment_amount = models.IntegerField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Only populated for 'Purchase' records, indicating the total amount spent on this purchase in cents"
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "user_credit_history"
+        db_table_comment = "A historical record for each credit transaction, including credit purchases, credit grants from special offers, and credit redemptions from generating an AI-assisted interpretation for a reading"
+        ordering = ['user', '-created_at']
+
+    def __str__(self):
+        str_rep = f"{self.user.username} | {self.history_type} at {self.created_at} ({self.credits_amount} credits)"
         return str_rep

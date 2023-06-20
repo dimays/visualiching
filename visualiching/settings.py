@@ -131,6 +131,7 @@ DEFAULT_FROM_EMAIL = 'notifications@visualiching.com'
 if WORKING_ENV == 'dev':
     SECURE_SSL_REDIRECT = False
 else:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
 
 AUTO_LOGOUT = {

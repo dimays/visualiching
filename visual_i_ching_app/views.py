@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from visual_i_ching_app.models import Trigram, Hexagram, HexagramLine, LineType, Reading, UserCreditHistory, UserDetail
 
@@ -113,6 +114,20 @@ def my_account(request):
     }
 
     return render(request, 'visual_i_ching_app/my_account.html', context=context)
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+
+        user = request.user
+        user.delete()
+
+        logout(request)
+
+        return redirect('visual-i-ching-app-home')
+
+    return render(request, 'my_account.html')
+
 
 def page_not_found_view(request, exception):
     return render(request, 'visual_i_ching_app/404.html', status=404)

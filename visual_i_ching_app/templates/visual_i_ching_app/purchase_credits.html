@@ -3,10 +3,12 @@
 
 {% block content %}
 <div class="container my-5">
-  <div class="row mx-md-5 mx-2">
+  <div class="row">
     <h1 class="display-4 serif-text">AI Interpretation Credits</h1>
     <p>With each AI Interpretation Credit, you can generate an <b>AI-assisted interpretation</b> of any reading you've saved. Each interpretation is automatically saved with your reading.</p>
-    <h4 class="text-center mb-3">You currently have <b>{{ current_credits }}</b> available</h4>
+    <h4 class="text-center my-3">You currently have <b>{{ current_credits }}</b> available</h4>
+  </div>
+  <div class="row mx-md-5 mx-2">
     <table class="table table-striped mb-5">
         <thead>
           <tr>
@@ -49,13 +51,14 @@
           </tr>
         </tbody>
     </table>
-    <p>Each AI-assisted interpretation includes:</p>
-    <ol class="list-group-item list-group list-group-numbered border-0 mb-3">
-        <li class="list-group-item border-0">A concise, personalized summary of the entire Situation as it applies to the prompt you entered for the reading</li>
-        <li class="list-group-item border-0">Details on how the initial Hexagram is considered in this interpretation, including its component trigrams</li>
-        <li class="list-group-item border-0">Details on how each changing line is considered in this interpretation</li>
-        <li class="list-group-item border-0">Details on how the resulting Hexagram is considered in this interpretation, including its component trigrams</li>
-    </ol>
+  </div>
+  <div class="row">
+    <p>Here's an example of what the AI-assisted Interpretation can offer:</p>
+
+    
+    <div class="h1">FILL THIS IN</div>
+
+
     <p><b>A Note on Stripe Checkout</b></p>
     <small>
         <p>When you click the "Buy Now" button in the table above, you'll be seamlessly redirected to Stripe Checkout to securely complete your purchase of credits. Stripe Checkout is a trusted payment platform that ensures the safety of your payment information.</p>

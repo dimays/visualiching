@@ -5,10 +5,12 @@
     {% if user.is_authenticated %}
     <div class="container my-5">
         <h1 class="display-4 serif-text">Welcome back to VisualIChing</h1>
+        <p><small class="text-muted">seek clarity, embrace change, and tap into the universal flow of transformation</small></p>
         <div class="row my-5">
             <div class="col-lg-2"></div>
             <div class="col-lg-4">
                 <div class="card my-2">
+                    <img src="{% static 'visual_i_ching_app/img/new_reading.png' %}" class="card-img-top" alt="New Reading">
                     <div class="card-body">
                         <h5 class="card-title">New Reading</h5>
                         <p class="card-text">Consult the I Ching for guidance; generate a hexagram, or enter a hexagram that you generated from a physical method (such as coins or yarrow stalks).</p>
@@ -20,6 +22,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="card my-2">
+                    <img src="{% static 'visual_i_ching_app/img/my_readings.png' %}" class="card-img-top" alt="My Readings">
                     <div class="card-body">
                         <h5 class="card-title">My Readings</h5>
                         <p class="card-text">Gain insights from your past by reviewing your previous readings, add or edit your notes, generate an AI-assisted interpretation for your readings.</p>

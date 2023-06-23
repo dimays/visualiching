@@ -1,20 +1,13 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from visual_i_ching_app.models import Trigram, Hexagram, HexagramLine, LineType, Reading, UserCreditHistory, UserDetail
 
 
-def count_readings(request):
-    current_user_id = request.user.id
-    count = Reading.objects.filter(user_id=current_user_id).count()
-    return count
-
-def count_ai_interpretations(request):
-    current_user_id = request.user.id
-    count = Reading.objects.filter(user_id=current_user_id, gpt_interpretation__isnull=False).count()
-    return count
-
+# General Functions
 def get_user_details(request):
     current_user_id = request.user.id
 
@@ -38,6 +31,8 @@ def get_user_details(request):
 
     return current_credits, purchase_btn_text
 
+
+# Home
 def home(request):
     context = {
         "hexagrams": Hexagram.objects.all()
@@ -45,6 +40,7 @@ def home(request):
 
     return render(request, 'visual_i_ching_app/home.html', context=context)
 
+# About
 def about(request):
     user_details = get_user_details(request)
     current_credits = user_details[0]
@@ -60,6 +56,7 @@ def about(request):
 
     return render(request, 'visual_i_ching_app/about.html', context=context)
 
+# Purchase Credits
 @login_required
 def purchase_credits(request):
     user_details = get_user_details(request)
@@ -76,27 +73,82 @@ def purchase_credits(request):
 
     return render(request, 'visual_i_ching_app/purchase_credits.html', context=context)
 
+# Create New Reading
+
+
+# My Readings (view all, and only, your own readings)
+@method_decorator(login_required, name='dispatch')
+class ReadingListView(ListView):
+    model = Reading
+    template_name = 'visual_i_ching_app/my_readings.html'
+    context_object_name = 'readings'
+    ordering = ['-created_at']
+
+
+# View Single Reading
+@method_decorator(login_required, name='dispatch')
+class ReadingDetailView(DetailView):
+    model = Reading
+    template_name = 'visual_i_ching_app/reading.html'
+    line_types = ['hello world']
+
+    def dispatch(self, request, *args, **kwargs):
+        reading = self.get_object()
+        if request.user.id != reading.user.id:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reading = self.object
+
+        prefaces = {
+            '1': 'Line One',
+            '2': 'Line Two',
+            '3': 'Line Three',
+            '4': 'Line Four',
+            '5': 'Line Five',
+            '6': 'Live Six'
+        }
+
+        changing_lines = []
+        idx = 0
+
+        for character in reading.value_string:
+            idx += 1
+
+            if character in ('6', '9'):
+                line_type = get_object_or_404(LineType, line_value=character)
+                changing_line = get_object_or_404(HexagramLine, hexagram=reading.starting_hexagram, position=idx)
+                changing_lines.append({'line_type': line_type, 'preface': prefaces[f'{idx}'], 'hexagram_line': changing_line})
+
+        if len(changing_lines) == 6:
+            context['fc_text'] = reading.starting_hexagram.full_change_text
+            context['fc_interpretation'] = reading.starting_hexagram.full_change_interpretation
+
+        context['changing_lines'] = changing_lines
+
+        return context
+
+
+# New Reading
 @login_required
 def new_reading(request):
     return render(request, 'visual_i_ching_app/new_reading.html')
 
+
+# My Account
 @login_required
-def my_readings(request):
-    readings = Reading.objects.all()
-    context = {
-        "readings": readings
-    }
-    return render(request, 'visual_i_ching_app/my_readings.html', context)
+def count_readings(request):
+    current_user_id = request.user.id
+    count = Reading.objects.filter(user_id=current_user_id).count()
+    return count
 
-def view_reading(request, reading_id):
-    reading = get_object_or_404(Reading, reading_id=reading_id)
-    if request.user.id != reading.user.id:
-        raise PermissionDenied
-
-    context = {
-        "reading": reading
-    }
-    return render(request, 'visual_i_ching_app/reading.html', context=context)
+@login_required
+def count_ai_interpretations(request):
+    current_user_id = request.user.id
+    count = Reading.objects.filter(user_id=current_user_id).exclude(gpt_interpretation='').count()
+    return count
 
 @login_required
 def my_account(request):
@@ -129,9 +181,9 @@ def delete_account(request):
     return render(request, 'my_account.html')
 
 
+# Error Pages
 def page_not_found_view(request, exception):
     return render(request, 'visual_i_ching_app/404.html', status=404)
-
 
 def page_forbidden_view(request, exception):
     return render(request, 'visual_i_ching_app/403.html', status=404)

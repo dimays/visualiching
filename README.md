@@ -6,6 +6,7 @@ An open-source Django application created by David Mays, 2023
 ## About
 [VisualIChing](https://www.visualiching.com) is a web application dedicated to providing an immersive and enlightening experience with the ancient oracle known as the I Ching. This interactive website offers a visually engaging exploration of this profound divination tool, empowering individuals to gain insights and guidance for their life's journey.
 
+
 ## Features
 VisualIChing offers the following features:
 
@@ -80,7 +81,7 @@ Your .env file should live in the top-level directory of the project (same as th
 | Environment Variable | API Provider | Which Services/Features This Variable is Required For |
 | -- | -- | -- |
 | SECRET_KEY | N/A | Required for local hosting; you can generate one easily at [Djecrety](https://djecrety.ir/) |
-| DEBUG_FLAG | N/A | Required for `settings.py` config handling, should be set to `False` |
+| DEBUG_FLAG | N/A | Required for `settings.py` config handling, should be set to `True` |
 | WORKING_ENV | N/A | Required for `settings.py` config handling, should be set to `dev` |
 | OPENAI_API_KEY | [OpenAI](https://platform.openai.com/docs/api-reference) | AIService (AI-Assisted Interpretations), any net-new AI feature |
 | VISUALICHING_SENDGRID_API_KEY | [Sendgrid](https://docs.sendgrid.com/) | Reset Password, any net-new email notification feature |

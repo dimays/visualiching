@@ -3,4 +3,8 @@
 
 {% block content %}
 
+{% for reading in readings %}
+    <p>{{ reading.prompt }}</p>
+{% endfor %}
+
 {% endblock %}

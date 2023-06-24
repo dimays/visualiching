@@ -2,296 +2,335 @@
 {% load static %}
 
 {% block content %}
-    <div class="container my-5">
-        <div class="row">
-            <h2 class="display-4 serif-text">{{ reading.created_at|date:'m/d/y' }}</h2>
-            <p class="px-5 my-3">{{ reading.prompt }}</p>
+    <div class="row">
+        <h2 class="display-4 serif-text mb-5">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
+        <h3 class="serif-text">My Prompt</h3>
+        <p class="px-4 my-3"><i>{{ reading.prompt }}</i></p>
+        <h3 class="serif-text my-3">AI-Assisted Interpretation</h3>
+        {% if reading.gpt_interpretation %}
+        <p class="px-4 my-3"><i>{{ reading.gpt_interpretation }}</i></p>
+        {% elif current_credits > 0 %}
+        <div class="text-center my-3">
+            <a href="#" class="btn btn-primary btn-lg" role="button">Generate AI Interpretation</a>
+            <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
         </div>
-        <div class="row my-3">
-            {% if reading.resulting_hexagram %}
-            <div class="col-lg-4 my-3">
-                <h4 class="serif-text text-center">Initial Hexagram</h4>
-                <p class="text-center"><small>Reveals the symbolic representation of the initial situation or question.</small></p>
-                <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3">
-                <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
-                <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
-                <div class="accordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                Hexagram Description
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
-                            <div class="accordion-body">
-                                {{ reading.starting_hexagram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                The Image
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
-                            <div class="accordion-body">
-                                <strong>{{ reading.starting_hexagram.image_text|linebreaks }}</strong>
-                                {{ reading.starting_hexagram.image_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                The Judgment
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
-                            <div class="accordion-body">
-                                <strong>{{ reading.starting_hexagram.judgment_text|linebreaks }}</strong>
-                                {{ reading.starting_hexagram.judgment_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                The Trigrams
-                            </button>
-                        </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
-                            <div class="accordion-body">
-                                <h5 class="serif-text text-center">Upper Trigram</h5>
-                                <img src="{% static reading.starting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.starting_hexagram.upper_trigram.chinese_character }} {{ reading.starting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.upper_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.starting_hexagram.upper_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.symbolic_animal }}</p>
-                                {{ reading.starting_hexagram.upper_trigram.description|linebreaks }}
-                                <h5 class="serif-text text-center">Lower Trigram</h5>
-                                <img src="{% static reading.starting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.starting_hexagram.lower_trigram.chinese_character }} {{ reading.starting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.lower_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.starting_hexagram.lower_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.symbolic_animal }}</p>
-                                {{ reading.starting_hexagram.lower_trigram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 my-3">
-                <h4 class="serif-text text-center">Changing Lines</h4>
-                <p class="text-center"><small>The changing lines indicate areas of transition, challenge, or growth.</small></p>
-                <img src="{% static 'visual_i_ching_app/img/changing_lines.png' %}" class="rounded img-fluid my-3">
-                <div class="accordion">
-                    {% for line in changing_lines %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingLine{{ line.hexagram_line.position }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLine{{ line.hexagram_line.position }}" aria-expanded="false" aria-controls="collapseLine{{ line.hexagram_line.position }}">
-                                {{ line.preface }}
-                            </button>
-                        </h2>
-                        <div id="collapseLine{{ line.hexagram_line.position }}" class="accordion-collapse collapse" aria-labelledby="headingLine{{ line.hexagram_line.position }}">
-                            <div class="accordion-body">
-                                <strong>{{ line.hexagram_line.change_text|linebreaks }}</strong>
-                                {{ line.hexagram_line.change_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    {% if fc_text %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFullChange">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFullChange" aria-expanded="false" aria-controls="collapseFullChange">
-                                All Lines Changing
-                            </button>
-                        </h2>
-                        <div id="collapseFullChange" class="accordion-collapse collapse" aria-labelledby="headingFullChange">
-                            <div class="accordion-body">
-                                <strong>{{ fc_text|linebreaks }}</strong>
-                                {{ fc_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-lg-4 my-3">
-                <h4 class="serif-text text-center">Resulting Hexagram</h4>
-                <p class="text-center"><small>Reflects the transformed state or outcome of the situation.</small></p>
-                <img src="{% static reading.resulting_hexagram.image_url %}" class="rounded img-fluid my-3">
-                <h5 class="serif-text text-center">{{ reading.resulting_hexagram.chinese_character }} {{ reading.resulting_hexagram.pinyin_romanization }} / {{ reading.resulting_hexagram.english_translation }}</h5>
-                <h1 class="text-center">{{ reading.resulting_hexagram.hexagram_symbol }}</h1>
-                <div class="accordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOneResulting">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneResulting" aria-expanded="false" aria-controls="collapseOneResulting">
-                                Hexagram Description
-                            </button>
-                        </h2>
-                        <div id="collapseOneResulting" class="accordion-collapse collapse" aria-labelledby="headingOneResulting">
-                            <div class="accordion-body">
-                                {{ reading.resulting_hexagram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwoResulting">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoResulting" aria-expanded="false" aria-controls="collapseTwoResulting">
-                                The Image
-                            </button>
-                        </h2>
-                        <div id="collapseTwoResulting" class="accordion-collapse collapse" aria-labelledby="headingTwoResulting">
-                            <div class="accordion-body">
-                                <strong>{{ reading.resulting_hexagram.image_text|linebreaks }}</strong>
-                                {{ reading.resulting_hexagram.image_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThreeResulting">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeResulting" aria-expanded="false" aria-controls="collapseThreeResulting">
-                                The Judgment
-                            </button>
-                        </h2>
-                        <div id="collapseThreeResulting" class="accordion-collapse collapse" aria-labelledby="headingThreeResulting">
-                            <div class="accordion-body">
-                                <strong>{{ reading.resulting_hexagram.judgment_text|linebreaks }}</strong>
-                                {{ reading.resulting_hexagram.judgment_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFourResulting">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourResulting" aria-expanded="false" aria-controls="collapseFourResulting">
-                                The Trigrams
-                            </button>
-                        </h2>
-                        <div id="collapseFourResulting" class="accordion-collapse collapse" aria-labelledby="headingFourResulting">
-                            <div class="accordion-body">
-                                <h5 class="serif-text text-center">Upper Trigram</h5>
-                                <img src="{% static reading.resulting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.resulting_hexagram.upper_trigram.chinese_character }} {{ reading.resulting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.resulting_hexagram.upper_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.resulting_hexagram.upper_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.resulting_hexagram.upper_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.resulting_hexagram.upper_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.resulting_hexagram.upper_trigram.symbolic_animal }}</p>
-                                {{ reading.resulting_hexagram.upper_trigram.description|linebreaks }}
-                                <h5 class="serif-text text-center">Lower Trigram</h5>
-                                <img src="{% static reading.resulting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.resulting_hexagram.lower_trigram.chinese_character }} {{ reading.resulting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.resulting_hexagram.lower_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.resulting_hexagram.lower_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.resulting_hexagram.lower_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.resulting_hexagram.lower_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.resulting_hexagram.lower_trigram.symbolic_animal }}</p>
-                                {{ reading.resulting_hexagram.lower_trigram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <div class="text-center">
-                <h4 class="serif-text">Unchanging Hexagram</h4>
-                <p><small>When there are no changing lines in the reading, it suggests that the current situation or question remains stable and constant, without significant shifts or alterations. The unchanging hexagram provides focused insights into the static nature of the circumstances and offers guidance based on the inherent qualities of the hexagram itself.</small></p>
-            </div>
-            <div class="col-lg-2 my-3"></div>
-            <div class="col-lg-8 my-3">
-                <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3">
-                <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
-                <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
-                <div class="accordion">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                Hexagram Description
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
-                            <div class="accordion-body">
-                                {{ reading.starting_hexagram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                The Image
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
-                            <div class="accordion-body">
-                                <strong>{{ reading.starting_hexagram.image_text|linebreaks }}</strong>
-                                {{ reading.starting_hexagram.image_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                The Judgment
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
-                            <div class="accordion-body">
-                                <strong>{{ reading.starting_hexagram.judgment_text|linebreaks }}</strong>
-                                {{ reading.starting_hexagram.judgment_interpretation|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingFour">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                The Trigrams
-                            </button>
-                        </h2>
-                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
-                            <div class="accordion-body">
-                                <h5 class="serif-text text-center">Upper Trigram</h5>
-                                <img src="{% static reading.starting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.starting_hexagram.upper_trigram.chinese_character }} {{ reading.starting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.upper_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.starting_hexagram.upper_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.starting_hexagram.upper_trigram.symbolic_animal }}</p>
-                                {{ reading.starting_hexagram.upper_trigram.description|linebreaks }}
-                                <h5 class="serif-text text-center">Lower Trigram</h5>
-                                <img src="{% static reading.starting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
-                                <h5 class="serif-text text-center">{{ reading.starting_hexagram.lower_trigram.chinese_character }} {{ reading.starting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.lower_trigram.english_translation }}</h5>
-                                <h1 class="text-center">{{ reading.starting_hexagram.lower_trigram.trigram_symbol }}</h1>
-                                <strong>Key Attribute</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.attribute }} </p>
-                                <strong>Traditional Family Role</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.family_relationship }}</p>
-                                <strong>Symbolic Animal</strong>
-                                <p>{{ reading.starting_hexagram.lower_trigram.symbolic_animal }}</p>
-                                {{ reading.starting_hexagram.lower_trigram.description|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 my-3"></div>
-            {% endif %}
+        {% else %}
+        <div class="text-center my-3">
+            <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
+            <p class="text-muted"><small>Each credit gives you one AI Interpretation for a reading (you currently have 0)</small></p>
         </div>
+        {% endif %}
+    </div>
+    <div class="row">
+        <h3 class="serif-text my-3">My Notes</h3>
+        {% if reading.user_notes %}
+        <p class="px-4 my-3"><i>{{ reading.user_notes }}</i></p>
+        <div class="text-center my-3">
+            <a href="#" class="btn btn-primary btn-lg" role="button">Edit Notes</a>
+        </div>
+        {% else %}
+        <div class="text-center my-3">
+            <a href="#" class="btn btn-primary btn-lg" role="button">Add Notes</a>
+        </div>
+        {% endif %}
+    </div>
+    <hr>
+    <div class="row my-3">
+        {% if reading.resulting_hexagram %}
+        <div class="col-lg-4 my-3">
+            <h4 class="serif-text text-center">Initial Hexagram</h4>
+            <p class="text-center"><small>Reveals the symbolic representation of the initial situation or question.</small></p>
+            <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3">
+            <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
+            <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Hexagram Description
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            {{ reading.starting_hexagram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            The Image
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <strong>{{ reading.starting_hexagram.image_text|linebreaks }}</strong>
+                            {{ reading.starting_hexagram.image_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            The Judgment
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                        <div class="accordion-body">
+                            <strong>{{ reading.starting_hexagram.judgment_text|linebreaks }}</strong>
+                            {{ reading.starting_hexagram.judgment_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            The Trigrams
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                        <div class="accordion-body">
+                            <h5 class="serif-text text-center">Upper Trigram</h5>
+                            <img src="{% static reading.starting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.starting_hexagram.upper_trigram.chinese_character }} {{ reading.starting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.upper_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.starting_hexagram.upper_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.symbolic_animal }}</p>
+                            {{ reading.starting_hexagram.upper_trigram.description|linebreaks }}
+                            <h5 class="serif-text text-center">Lower Trigram</h5>
+                            <img src="{% static reading.starting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.starting_hexagram.lower_trigram.chinese_character }} {{ reading.starting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.lower_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.starting_hexagram.lower_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.symbolic_animal }}</p>
+                            {{ reading.starting_hexagram.lower_trigram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 my-3">
+            <h4 class="serif-text text-center">Changing Lines</h4>
+            <p class="text-center"><small>The changing lines indicate areas of transition, challenge, or growth.</small></p>
+            <img src="{% static 'visual_i_ching_app/img/changing_lines.png' %}" class="rounded img-fluid my-3">
+            <div class="accordion">
+                {% for line in changing_lines %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingLine{{ line.hexagram_line.position }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLine{{ line.hexagram_line.position }}" aria-expanded="false" aria-controls="collapseLine{{ line.hexagram_line.position }}">
+                            {% if line.hexagram_line.is_governing_ruler %}
+                            ◯
+                            {% elif line.hexagram_line.is_constituing_ruler %}
+                            ▢
+                            {% endif %}
+                            {{ line.preface }}
+                        </button>
+                    </h2>
+                    <div id="collapseLine{{ line.hexagram_line.position }}" class="accordion-collapse collapse" aria-labelledby="headingLine{{ line.hexagram_line.position }}">
+                        <div class="accordion-body">
+                            {% if line.hexagram_line.is_governing_ruler %}
+                            <p class="text-center serif-text">Governing Ruler</p>
+                            <p class="text-center"><small>This is a line of prominence and good character</small></p>
+                            {% elif line.hexagram_line.is_constituing_ruler %}
+                            <p class="text-center serif-text">Constituting Ruler</p>
+                            <p class="text-center">This is a line of prominence and gives this hexagram its unique character, but is not neceesarily good-natured</p>
+                            {% endif %}
+                            <strong>{{ line.hexagram_line.change_text|linebreaks }}</strong>
+                            {{ line.hexagram_line.change_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if fc_text %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFullChange">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFullChange" aria-expanded="false" aria-controls="collapseFullChange">
+                            All Lines Changing
+                        </button>
+                    </h2>
+                    <div id="collapseFullChange" class="accordion-collapse collapse" aria-labelledby="headingFullChange">
+                        <div class="accordion-body">
+                            <strong>{{ fc_text|linebreaks }}</strong>
+                            {{ fc_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-4 my-3">
+            <h4 class="serif-text text-center">Resulting Hexagram</h4>
+            <p class="text-center"><small>Reflects the transformed state or outcome of the situation.</small></p>
+            <img src="{% static reading.resulting_hexagram.image_url %}" class="rounded img-fluid my-3">
+            <h5 class="serif-text text-center">{{ reading.resulting_hexagram.chinese_character }} {{ reading.resulting_hexagram.pinyin_romanization }} / {{ reading.resulting_hexagram.english_translation }}</h5>
+            <h1 class="text-center">{{ reading.resulting_hexagram.hexagram_symbol }}</h1>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOneResulting">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneResulting" aria-expanded="false" aria-controls="collapseOneResulting">
+                            Hexagram Description
+                        </button>
+                    </h2>
+                    <div id="collapseOneResulting" class="accordion-collapse collapse" aria-labelledby="headingOneResulting">
+                        <div class="accordion-body">
+                            {{ reading.resulting_hexagram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwoResulting">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoResulting" aria-expanded="false" aria-controls="collapseTwoResulting">
+                            The Image
+                        </button>
+                    </h2>
+                    <div id="collapseTwoResulting" class="accordion-collapse collapse" aria-labelledby="headingTwoResulting">
+                        <div class="accordion-body">
+                            <strong>{{ reading.resulting_hexagram.image_text|linebreaks }}</strong>
+                            {{ reading.resulting_hexagram.image_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThreeResulting">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeResulting" aria-expanded="false" aria-controls="collapseThreeResulting">
+                            The Judgment
+                        </button>
+                    </h2>
+                    <div id="collapseThreeResulting" class="accordion-collapse collapse" aria-labelledby="headingThreeResulting">
+                        <div class="accordion-body">
+                            <strong>{{ reading.resulting_hexagram.judgment_text|linebreaks }}</strong>
+                            {{ reading.resulting_hexagram.judgment_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFourResulting">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourResulting" aria-expanded="false" aria-controls="collapseFourResulting">
+                            The Trigrams
+                        </button>
+                    </h2>
+                    <div id="collapseFourResulting" class="accordion-collapse collapse" aria-labelledby="headingFourResulting">
+                        <div class="accordion-body">
+                            <h5 class="serif-text text-center">Upper Trigram</h5>
+                            <img src="{% static reading.resulting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.resulting_hexagram.upper_trigram.chinese_character }} {{ reading.resulting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.resulting_hexagram.upper_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.resulting_hexagram.upper_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.resulting_hexagram.upper_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.resulting_hexagram.upper_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.resulting_hexagram.upper_trigram.symbolic_animal }}</p>
+                            {{ reading.resulting_hexagram.upper_trigram.description|linebreaks }}
+                            <h5 class="serif-text text-center">Lower Trigram</h5>
+                            <img src="{% static reading.resulting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.resulting_hexagram.lower_trigram.chinese_character }} {{ reading.resulting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.resulting_hexagram.lower_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.resulting_hexagram.lower_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.resulting_hexagram.lower_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.resulting_hexagram.lower_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.resulting_hexagram.lower_trigram.symbolic_animal }}</p>
+                            {{ reading.resulting_hexagram.lower_trigram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <h4 class="serif-text">Unchanging Hexagram</h4>
+            <p><small>When there are no changing lines in the reading, it suggests that the current situation or question remains stable and constant, without significant shifts or alterations. The unchanging hexagram provides focused insights into the static nature of the circumstances and offers guidance based on the inherent qualities of the hexagram itself.</small></p>
+        </div>
+        <div class="col-lg-2 my-3"></div>
+        <div class="col-lg-8 my-3">
+            <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3">
+            <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
+            <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            Hexagram Description
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            {{ reading.starting_hexagram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            The Image
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            <strong>{{ reading.starting_hexagram.image_text|linebreaks }}</strong>
+                            {{ reading.starting_hexagram.image_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            The Judgment
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                        <div class="accordion-body">
+                            <strong>{{ reading.starting_hexagram.judgment_text|linebreaks }}</strong>
+                            {{ reading.starting_hexagram.judgment_interpretation|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            The Trigrams
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour">
+                        <div class="accordion-body">
+                            <h5 class="serif-text text-center">Upper Trigram</h5>
+                            <img src="{% static reading.starting_hexagram.upper_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.starting_hexagram.upper_trigram.chinese_character }} {{ reading.starting_hexagram.upper_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.upper_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.starting_hexagram.upper_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.starting_hexagram.upper_trigram.symbolic_animal }}</p>
+                            {{ reading.starting_hexagram.upper_trigram.description|linebreaks }}
+                            <h5 class="serif-text text-center">Lower Trigram</h5>
+                            <img src="{% static reading.starting_hexagram.lower_trigram.image_url %}" class="rounded img-fluid my-3">
+                            <h5 class="serif-text text-center">{{ reading.starting_hexagram.lower_trigram.chinese_character }} {{ reading.starting_hexagram.lower_trigram.pinyin_romanization }} / {{ reading.starting_hexagram.lower_trigram.english_translation }}</h5>
+                            <h1 class="text-center">{{ reading.starting_hexagram.lower_trigram.trigram_symbol }}</h1>
+                            <strong>Key Attribute</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.attribute }} </p>
+                            <strong>Traditional Family Role</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.family_relationship }}</p>
+                            <strong>Symbolic Animal</strong>
+                            <p>{{ reading.starting_hexagram.lower_trigram.symbolic_animal }}</p>
+                            {{ reading.starting_hexagram.lower_trigram.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 my-3"></div>
+        {% endif %}
     </div>
 {% endblock %}

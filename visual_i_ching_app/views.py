@@ -90,7 +90,6 @@ class ReadingListView(ListView):
 class ReadingDetailView(DetailView):
     model = Reading
     template_name = 'visual_i_ching_app/reading.html'
-    line_types = ['hello world']
 
     def dispatch(self, request, *args, **kwargs):
         reading = self.get_object()
@@ -101,7 +100,6 @@ class ReadingDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         reading = self.object
-
         prefaces = {
             '1': 'Line One',
             '2': 'Line Two',
@@ -110,6 +108,7 @@ class ReadingDetailView(DetailView):
             '5': 'Line Five',
             '6': 'Live Six'
         }
+        user_details = UserDetail.objects.get(user_id=self.request.user.id)
 
         changing_lines = []
         idx = 0
@@ -127,6 +126,7 @@ class ReadingDetailView(DetailView):
             context['fc_interpretation'] = reading.starting_hexagram.full_change_interpretation
 
         context['changing_lines'] = changing_lines
+        context['current_credits'] = user_details.current_credits
 
         return context
 

@@ -2,69 +2,61 @@
 {% load static %}
 
 {% block content %}
-<div class="container my-5">
-  <div class="row">
-    <h1 class="display-4 serif-text">AI Interpretation Credits</h1>
-    <p>With each AI Interpretation Credit, you can generate an <b>AI-assisted interpretation</b> of any reading you've saved. Each interpretation is automatically saved with your reading.</p>
-    <h5 class="text-center my-3">You currently have <b>{{ current_credits }}</b> available</h5>
-  </div>
-  <div class="row mx-md-5 mx-2">
-    <table class="table table-striped mb-5">
-        <thead>
-          <tr>
-            <th scope="col">Credit Bundle (# of AI Interpretations)</th>
-            <th scope="col">Cost for Bundle</th>
-            <th scope="col">Cost per Credit</th>
-            <th scope="col">Buy with Stripe</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1 Credit</td>
-            <td>$1</td>
-            <td>$1</td>
-            <td><a href="#" class="btn btn-primary">Buy Now</a></td>
-          </tr>
-          <tr>
-            <td>10 Credits</td>
-            <td>$5</td>
-            <td>$0.50</td>
-            <td><a href="#" class="btn btn-primary">Buy Now</a></td>
-          </tr>
-          <tr>
-            <td>50 Credits</td>
-            <td>$10</td>
-            <td>$0.20</td>
-            <td><a href="#" class="btn btn-primary">Buy Now</a></td>
-          </tr>
-          <tr>
-            <td>200 Credits</td>
-            <td>$20</td>
-            <td>$0.10</td>
-            <td><a href="#" class="btn btn-primary">Buy Now</a></td>
-          </tr>
-          <tr>
-            <td>1,000 Credits</td>
-            <td>$50</td>
-            <td>$0.05</td>
-            <td><a href="#" class="btn btn-primary">Buy Now</a></td>
-          </tr>
-        </tbody>
-    </table>
-  </div>
-  <div class="row">
-    <p>Here's an example of what the AI-assisted Interpretation can offer:</p>
-
-
-    <div class="h1">FILL THIS IN</div>
-
-
-    <p><b>A Note on Stripe Checkout</b></p>
-    <small>
-        <p>When you click the "Buy Now" button in the table above, you'll be seamlessly redirected to Stripe Checkout to securely complete your purchase of credits. Stripe Checkout is a trusted payment platform that ensures the safety of your payment information.</p>
-        <p>With Stripe Checkout, you'll have a smooth and intuitive purchasing experience. You'll be prompted to enter your payment details, such as credit card information or use saved payment methods if available. Stripe handles all payment processing, encryption, and security protocols, so you can confidently make your purchase without worrying about the safety of your sensitive information.</p>
-        <p>Once your payment is successfully processed through Stripe, you'll receive the purchased credits, allowing you to take full advantage of the services or features offered by the platform. Stripe Checkout provides a secure and reliable payment solution, giving you peace of mind while making your online purchases.</p>
-    </small>
-  </div>
-</div>
+    <div class="row">
+        <h1 class="display-4 serif-text">AI Interpretation Credits</h1>
+        <p>With each AI Interpretation Credit, you can generate an <b>AI-assisted interpretation</b> of any reading you've saved. Each interpretation is automatically saved with your reading.</p>
+        <h5 class="text-center my-3">You currently have <b>{{ current_credits }}</b> available</h5>
+    </div>
+    <div class="row mx-md-5 mx-2">
+        <table class="table table-striped mb-5">
+            <thead>
+                <tr>
+                    <th scope="col">Credit Bundle (# of AI Interpretations)</th>
+                    <th scope="col">Cost for Bundle</th>
+                    <th scope="col">Cost per Credit</th>
+                    <th scope="col">Buy with Stripe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1 Credit</td>
+                    <td>$1</td>
+                    <td>$1</td>
+                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                </tr>
+                <tr>
+                    <td>10 Credits</td>
+                    <td>$5</td>
+                    <td>$0.50</td>
+                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                </tr>
+                <tr>
+                    <td>50 Credits</td>
+                    <td>$10</td>
+                    <td>$0.20</td>
+                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                </tr>
+                <tr>
+                    <td>200 Credits</td>
+                    <td>$20</td>
+                    <td>$0.10</td>
+                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                </tr>
+                <tr>
+                    <td>1,000 Credits</td>
+                    <td>$50</td>
+                    <td>$0.05</td>
+                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <p><b>A Note on Stripe Checkout</b></p>
+        <small>
+            <p>When you click the "Buy Now" button in the table above, you'll be seamlessly redirected to Stripe Checkout to securely complete your purchase of credits. Stripe Checkout is a trusted payment platform that ensures the safety of your payment information.</p>
+            <p>With Stripe Checkout, you'll have a smooth and intuitive purchasing experience. You'll be prompted to enter your payment details, such as credit card information or use saved payment methods if available. Stripe handles all payment processing, encryption, and security protocols, so you can confidently make your purchase without worrying about the safety of your sensitive information.</p>
+            <p>Once your payment is successfully processed through Stripe, you'll receive the purchased credits, allowing you to take full advantage of the services or features offered by the platform. Stripe Checkout provides a secure and reliable payment solution, giving you peace of mind while making your online purchases.</p>
+        </small>
+    </div>
 {% endblock %}

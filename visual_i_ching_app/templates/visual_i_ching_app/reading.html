@@ -1,39 +1,73 @@
 {% extends 'visual_i_ching_app/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 
 {% block content %}
     <div class="row">
         <h2 class="display-4 serif-text mb-5">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
-        <h3 class="serif-text">My Prompt</h3>
-        <p class="px-4 my-3"><i>{{ reading.prompt }}</i></p>
-        <h3 class="serif-text my-3">AI-Assisted Interpretation</h3>
-        {% if reading.gpt_interpretation %}
-        <p class="px-4 my-3"><i>{{ reading.gpt_interpretation }}</i></p>
-        {% elif current_credits > 0 %}
-        <div class="text-center my-3">
-            <a href="#" class="btn btn-primary btn-lg" role="button">Generate AI Interpretation</a>
-            <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
+        <hr>
+        <div class="my-3">
+            <h3 class="serif-text text-center">My Prompt</h3>
+            <div class="px-3">
+                <p class="my-3"><i>{{ reading.prompt|linebreaks }}</i></p>
+            </div>
         </div>
-        {% else %}
-        <div class="text-center my-3">
-            <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
-            <p class="text-muted"><small>Each credit gives you one AI Interpretation for a reading (you currently have 0)</small></p>
+        <div class="my-3">
+            <h3 class="serif-text text-center">AI Interpretation</h3>
+            {% if reading.gpt_interpretation %}
+            <div class="px-3">
+                <p class="my-3"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
+            </div>
+            {% elif current_credits > 0 %}
+            <div class="text-center my-3">
+                <a href="#" class="btn btn-primary btn-lg" role="button">Get AI Interpretation</a>
+                <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
+            </div>
+            {% else %}
+            <div class="text-center my-3">
+                <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
+                <p class="text-muted"><small>Each credit gives you one AI Interpretation for a reading (you currently have 0)</small></p>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
+        <div class="my-3">
+            <h3 class="serif-text text-center">My Notes</h3>
+            {% if reading.user_notes %}
+            <div class="px-3">
+                <p class="my-3"><i>{{ reading.user_notes|linebreaks }}</i></p>
+            </div>
+            <div class="text-center my-3">
+                <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Edit Notes</a>
+            </div>
+            {% else %}
+            <div class="text-center my-3">
+                <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Add Notes</a>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    <div class="row">
-        <h3 class="serif-text my-3">My Notes</h3>
-        {% if reading.user_notes %}
-        <p class="px-4 my-3"><i>{{ reading.user_notes }}</i></p>
-        <div class="text-center my-3">
-            <a href="#" class="btn btn-primary btn-lg" role="button">Edit Notes</a>
+    
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-labelledby="notesModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notesModalLabel">{% if reading.user_notes %}Edit Notes{% else %}Add Notes{% endif %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'visual-i-ching-app-edit-notes' reading.reading_id %}">
+                        {% csrf_token %}
+                        {{ notes_form.notes|as_crispy_field }}
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <div class="text-center my-3">
-            <a href="#" class="btn btn-primary btn-lg" role="button">Add Notes</a>
-        </div>
-        {% endif %}
     </div>
+    
     <hr>
     <div class="row my-3">
         {% if reading.resulting_hexagram %}

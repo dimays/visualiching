@@ -1,13 +1,20 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from visual_i_ching_app.models import Trigram, Hexagram, HexagramLine, LineType, Reading, UserCreditHistory, UserDetail
+from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm
+from visual_i_ching_app.services import AIService, CreditsService
+from random import randint
 
 
 # General Functions
+def throw_coins():
+    value = randint(2,3) + randint(2,3) + randint(2,3)
+    return value
+
 def get_user_details(request):
     current_user_id = request.user.id
 
@@ -73,9 +80,6 @@ def purchase_credits(request):
 
     return render(request, 'visual_i_ching_app/purchase_credits.html', context=context)
 
-# Create New Reading
-
-
 # My Readings (view all, and only, your own readings)
 @method_decorator(login_required, name='dispatch')
 class ReadingListView(ListView):
@@ -127,15 +131,117 @@ class ReadingDetailView(DetailView):
 
         context['changing_lines'] = changing_lines
         context['current_credits'] = user_details.current_credits
+        context['notes_form'] = ReadingNotesForm(initial={'notes': self.object.user_notes})
 
         return context
 
+# Create New Reading
+@method_decorator(login_required, name='dispatch')
+class NewReadingView(View):
+    template_name = 'visual_i_ching_app/new_reading.html'
 
-# New Reading
+    def get(self, request):
+        form = ReadingForm()
+        context = {
+            'form': form,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        print(f"Request method: {request.method}")
+        print(f"Request headers: {request.headers}")
+        print(f"Request body: {request.POST}")
+
+        form = ReadingForm(request.POST)
+        if form.is_valid():
+            prompt = form.cleaned_data['prompt']
+            line_values = [
+                form.cleaned_data['line_1'],
+                form.cleaned_data['line_2'],
+                form.cleaned_data['line_3'],
+                form.cleaned_data['line_4'],
+                form.cleaned_data['line_5'],
+                form.cleaned_data['line_6'],
+            ]
+
+            if request.POST['line_method'] == 'throw_coins':
+                mutable_post = request.POST.copy()
+                line_values = [str(throw_coins()) for _ in range(6)]
+                for i, line_value in enumerate(line_values):
+                    mutable_post[f'line_{i+1}'] = str(line_value)
+                form = ReadingForm(mutable_post)
+
+            line_types = []
+            for line_value in line_values:
+                line_type = LineType.objects.get(line_value=int(line_value))
+                line_types.append(line_type)
+
+            starting_binary_str = ""
+            resulting_binary_str = ""
+            has_no_changing_lines = True
+
+            for line_type in line_types:
+                starting_binary_str += str(line_type.binary_value)
+                if line_type.is_changing:
+                    resulting_binary_str += str(line_type.binary_value ^ 1)
+                    has_no_changing_lines = False
+                else:
+                    resulting_binary_str += str(line_type.binary_value)
+
+            starting_hexagram = Hexagram.objects.get(binary_value_string=starting_binary_str)
+            resulting_hexagram = Hexagram.objects.get(binary_value_string=resulting_binary_str)
+
+            if has_no_changing_lines:
+                reading = Reading(
+                    user=request.user,
+                    starting_hexagram=starting_hexagram,
+                    value_string=''.join(line_values),
+                    prompt=prompt
+                )
+            else:
+                reading = Reading(
+                    user=request.user,
+                    starting_hexagram=starting_hexagram,
+                    resulting_hexagram=resulting_hexagram,
+                    value_string=''.join(line_values),
+                    prompt=prompt
+                )
+            reading.save()
+
+            ai_checked = 'ai_assist_checkbox' in request.POST
+
+            if ai_checked:
+                ai_interpretation = AIService.generate_interpretation(reading)
+                reading.gpt_interpretation = ai_interpretation
+                reading.save()
+                
+                CreditsService.deduct_credit(request.user)
+            
+            return redirect('visual-i-ching-app-reading', pk=reading.reading_id)
+
+
+        context = {
+            'form': form,
+        }
+        
+        return render(request, self.template_name, context)
+
+# Edit Notes
 @login_required
-def new_reading(request):
-    return render(request, 'visual_i_ching_app/new_reading.html')
+def update_notes(request, pk):
+    reading = get_object_or_404(Reading, reading_id=pk)
+    
+    if request.method == 'POST':
+        form = ReadingNotesForm(request.POST)
+        print(f'form.is_valid(): {form.is_valid() == True}')
+        if form.is_valid():
+            reading.user_notes = form.cleaned_data['notes']
+            reading.save()
+            return redirect('visual-i-ching-app-reading', pk=pk)
+    else:
+        form = ReadingNotesForm(initial={'notes': reading.user_notes})
 
+    return render(request, 'update_notes.html', {'form': form, 'reading': reading})
 
 # My Account
 @login_required

@@ -2,106 +2,103 @@
 {% load static %}
 
 {% block content %}
-    <div class="container my-5">
-        <h1 class="display-4 serif-text">About VisualIChing</h1>
-        <p>VisualIChing is dedicated to providing an immersive and enlightening experience with the ancient oracle known as the I Ching. This interactive website offers a visually engaging exploration of this profound divination tool, empowering individuals to gain insights and guidance for their life's journey.</p>
+    <h1 class="display-4 serif-text">About VisualIChing</h1>
+    <p>VisualIChing is dedicated to providing an immersive and enlightening experience with the ancient oracle known as the I Ching. This interactive website offers a visually engaging exploration of this profound divination tool, empowering individuals to gain insights and guidance for their life's journey.</p>
+
+    {% if not user.is_authenticated %}
+    <div class="row my-5">
+        <h1 class="serif-text">Embark on a Journey of Self-Discovery</h1>
+        <p>VisualIChing invites you to embark on a journey of self-discovery, exploring the timeless wisdom of the I Ching through an interactive and visually captivating experience. May the profound insights of this ancient oracle inspire and guide you as you navigate the ever-changing currents of life.</p>
+        <p>Begin your exploration of the I Ching with VisualIChing today and uncover the deep well of wisdom that awaits you.</p>
+        <div class="text-center my-5">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Sign Up For Free</a>
+        </div>
     </div>
-    <div class="container my-5">
-        {% if not user.is_authenticated %}
-        <div class="row">
-            <h1 class="serif-text">Embark on a Journey of Self-Discovery</h1>
-            <p>VisualIChing invites you to embark on a journey of self-discovery, exploring the timeless wisdom of the I Ching through an interactive and visually captivating experience. May the profound insights of this ancient oracle inspire and guide you as you navigate the ever-changing currents of life.</p>
-            <p>Begin your exploration of the I Ching with VisualIChing today and uncover the deep well of wisdom that awaits you.</p>
-            <div class="text-center my-5">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Sign Up For Free</a>
+    {% endif %}
+    <div class="row">
+        <div id="carouselHexagrams" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for hexagram in hexagrams %}
+                {% if hexagram.hexagram_id == 1 %}
+                    <div class="carousel-item active">
+                {% else %}
+                    <div class="carousel-item">        
+                {% endif %}
+                        <img src="{% static hexagram.image_url %}" class="d-block w-100" alt="image of hexagram '{{ hexagram.english_translation }}">
+                        <div class="carousel-caption d-block">
+                            <h1>{{ hexagram.chinese_character }}</h1>
+                            <h3 class="serif-text">{{ hexagram.english_translation }}</h3>
+                            <h1>{{ hexagram.hexagram_symbol }}</h1>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
+        </div>
+        <p class="text-center text-secondary my-1"><small>a unique watercolor painting for each hexagram</small></p>
+    </div>
+    <div class="row mt-5">
+        <h3 class="serif-text">Free Account Forever</h3>
+        <p>With your free account, you can easily create visual readings, take your own notes on the details of the reading, and save it all to your account for future reference at any time.</p>
+        <h3 class="serif-text">Premium AI Technology</h3>
+        <p>Additionally, you can always purchase Credits, which can be used to generate <b>AI-assisted interpretations</b> of any reading you've saved. Each Credit grants you one AI-assisted interpretation, which takes many of the barriers of time and interpretation out of the process, making it much easier to understand your readings quickly.</p>
+        <h5 class="serif-text">Sample Reading</h5>
+        <p><i>See what awaits you at VisualIChing!</i></p>
+        <img class="img-fluid my-3" src="{% static 'visual_i_ching_app/img/reading_sample.png' %}" alt="Sample Reading">
+        <h3 class="serif-text">Flexible Pricing</h3>
+        <p>We offer a flexible credit system for accessing these AI interpretations:</p>
+    </div>
+    <div class="row mx-md-5 mx-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">Credit Bundle (# of AI Interpretations)</th>
+                <th scope="col">Cost for Bundle</th>
+                <th scope="col">Cost per Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>1 Credit</td>
+                <td>$1</td>
+                <td>$1</td>
+                </tr>
+                <tr>
+                <td>10 Credits</td>
+                <td>$5</td>
+                <td>$0.50</td>
+                </tr>
+                <tr>
+                <td>50 Credits</td>
+                <td>$10</td>
+                <td>$0.20</td>
+                </tr>
+                <tr>
+                <td>200 Credits</td>
+                <td>$20</td>
+                <td>$0.10</td>
+                </tr>
+                <tr>
+                <td>1,000 Credits</td>
+                <td>$50</td>
+                <td>$0.05</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if user.is_authenticated %}
+        <p class="text-center">You currently have {{ current_credits }}.</p>
+        <div class="text-center">
+            <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">{{ purchase_btn_text }}</a>
         </div>
         {% endif %}
-        <div class="row">
-            <div id="carouselHexagrams" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    {% for hexagram in hexagrams %}
-                    {% if hexagram.hexagram_id == 1 %}
-                        <div class="carousel-item active">
-                    {% else %}
-                        <div class="carousel-item">        
-                    {% endif %}
-                            <img src="{% static hexagram.image_url %}" class="d-block w-100" alt="image of hexagram '{{ hexagram.english_translation }}">
-                            <div class="carousel-caption d-block">
-                                <h1>{{ hexagram.chinese_character }}</h1>
-                                <h3 class="serif-text">{{ hexagram.english_translation }}</h3>
-                                <h1>{{ hexagram.hexagram_symbol }}</h1>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <p class="text-center text-secondary my-1"><small>a unique watercolor painting for each hexagram</small></p>
-        </div>
-        <div class="row mt-5">
-            <h3 class="serif-text">Free Account Forever</h3>
-            <p>With your free account, you can easily create visual readings, take your own notes on the details of the reading, and save it all to your account for future reference at any time.</p>
-            <h3 class="serif-text">Premium AI Technology</h3>
-            <p>Additionally, you can always purchase Credits, which can be used to generate <b>AI-assisted interpretations</b> of any reading you've saved. Each Credit grants you one AI-assisted interpretation, which takes many of the barriers of time and interpretation out of the process, making it much easier to understand your readings quickly.</p>
-            <h5 class="serif-text">Sample Reading</h5>
-            <p><i>See what awaits you at VisualIChing!</i></p>
-            <img class="img-fluid my-3" src="{% static 'visual_i_ching_app/img/reading_sample.png' %}" alt="Sample Reading">
-            <h3 class="serif-text">Flexible Pricing</h3>
-            <p>We offer a flexible credit system for accessing these AI interpretations:</p>
-        </div>
-        <div class="row mx-md-5 mx-2">
-            <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">Credit Bundle (# of AI Interpretations)</th>
-                    <th scope="col">Cost for Bundle</th>
-                    <th scope="col">Cost per Credit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1 Credit</td>
-                    <td>$1</td>
-                    <td>$1</td>
-                  </tr>
-                  <tr>
-                    <td>10 Credits</td>
-                    <td>$5</td>
-                    <td>$0.50</td>
-                  </tr>
-                  <tr>
-                    <td>50 Credits</td>
-                    <td>$10</td>
-                    <td>$0.20</td>
-                  </tr>
-                  <tr>
-                    <td>200 Credits</td>
-                    <td>$20</td>
-                    <td>$0.10</td>
-                  </tr>
-                  <tr>
-                    <td>1,000 Credits</td>
-                    <td>$50</td>
-                    <td>$0.05</td>
-                  </tr>
-                </tbody>
-            </table>
-            {% if user.is_authenticated %}
-            <p class="text-center">You currently have {{ current_credits }}.</p>
-            <div class="text-center">
-                <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">{{ purchase_btn_text }}</a>
-            </div>
-            {% endif %}
-        </div>
     </div>
-    <div class="container my-5">
+    <div class="row my-5">
         <h2 class="serif-text">Brief History of the I Ching</h2>
         <p>The I Ching, also known as the Book of Changes, is an ancient Chinese divination text with a rich history spanning over two millennia. Its origins can be traced back to the Zhou dynasty (1046-256 BCE) in China. According to legend, the I Ching was compiled by the legendary sage King Wen and his son, the Duke of Zhou. It was later expanded upon by Confucius, who added commentaries to the hexagrams. The I Ching draws upon the principles of yin and yang and the concept of the Tao, offering a profound understanding of the dynamic interplay of opposites and the natural cycles of change.</p>
         <p>The I Ching has had a significant impact on Western culture, particularly since its translation and introduction to the West in the 19th century. Its profound wisdom and universal principles have fascinated scholars, philosophers, and artists alike. In the realm of philosophy, influential thinkers such as Carl Jung and Wilhelm Reich drew upon the I Ching to explore the depths of the human psyche and the collective unconscious. Its concepts of balance, harmony, and transformation resonated with Western intellectuals seeking alternative perspectives on existence and the nature of reality.</p>
         <p>Moreover, the I Ching has found a place in various artistic expressions. Its symbols and archetypes have inspired writers, poets, and visual artists, shaping their creative endeavors. The I Ching's profound insights into the nature of change and the interconnectedness of all things have provided a foundation for contemplation and personal growth in Western spiritual and self-development practices. Today, the I Ching continues to be valued as a source of wisdom, guidance, and inspiration, with its teachings applied to diverse fields such as psychology, business strategy, and personal development.</p>
         <p>As the I Ching continues to transcend cultural boundaries, its timeless wisdom remains a source of contemplation and insight for individuals seeking a deeper understanding of themselves and the world around them.</p>
     </div>
-    <div class="container my-5">
+    <div class="row my-5">
         <h2 class="serif-text">Traditional Forms of Consulting the Oracle</h2>
         <p>The I Ching offers two primary methods for consulting the oracle: the coin method and the yarrow stalk method. Both techniques provide a systematic approach to generating the hexagram that reflects your current situation or question. Choose the method that resonates with you and follow the step-by-step instructions below.</p>
         <h4 class="serif-text">Coin Method</h4>
@@ -144,7 +141,7 @@
             <li class="list-group-item border-0">Repeat this entire process six times to build up a hexagram of six lines, starting from the bottom.</li>
         </ol>
     </div>
-    <div class="container my-5">
+    <div class="row my-5">
         <h3 class="serif-text">Interpreting the Situation</h3>
         <p>Once you have generated the hexagram, it is essential to interpret its meaning in the context of your question or situation. Follow these general steps to gain insight into the message of the oracle:</p>
         <ol class="list-group list-group-numbered my-3">
@@ -158,11 +155,11 @@
         </ol>
         <p>Remember, the I Ching provides guidance, but it is up to you to apply this wisdom and make your own decisions based on your unique circumstances. Trust your intuition and let the I Ching be a source of insight and illumination as you navigate the paths of life.</p>
     </div>
-    <div class="container my-5">
+    <div class="row my-5">
         <h2 class="serif-text">Guidance and Personal Responsibility</h2>
         <p>The I Ching provides profound guidance and wisdom, acting as a compass for navigating the complexities of life. However, it is important to recognize that each individual bears the responsibility to interpret and apply this guidance in their own unique context. The I Ching serves as a guide, illuminating paths and possibilities, but the ultimate decisions and actions reside with each individual.</p>
     </div>
-    <div class="container my-5">
+    <div class="row my-5">
         <h2 class="serif-text">Sources</h2>
         <p>The written content on this website was adapted from the renowned Wilhelm-Baynes translation of the I Ching. We have taken care to preserve the essence and wisdom of the original text while making certain adaptations to promote inclusivity and accessibility. In some instances, we have paraphrased passages, and we have replaced male pronouns with gender-neutral language when it does not interfere with the metaphor employed by the author. Our goal is to honor the integrity of the text while fostering an inclusive environment for all.</p>
         <p>The visual elements on this website were generated using Dall-E 2, based on the written content for each hexagram and trigram and further edited by the VisualIChing team.</p>

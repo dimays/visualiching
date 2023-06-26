@@ -54,11 +54,26 @@
             <div class="col-lg-4 my-3">
                 <h3 class="display-6 serif-text">Step 4: Complete</h3>
                 <div class="text-center my-3">
-                    <button type="submit" class="btn btn-primary btn-lg my-2" name="save_view" id="save-view-btn" disabled>Save & View</button>
+                    <button type="submit" class="btn btn-primary btn-lg my-2" name="save_view" id="save-view-btn" data-bs-toggle="modal" data-bs-target="#ai-modal" disabled>Save & View</button>
                 </div>
             </div>
         </div>
     </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="ai-modal" tabindex="-1" aria-labelledby="ai-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title serif-text" id="ai-modal-label">Interpreting your reading...</h5>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid" src="{% static 'visual_i_ching_app/img/interpretation_progress.png' %}">
+                    <p class="text-center"><i>Please wait while the AI interpretation is generated.</i></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -80,6 +95,7 @@
             promptInput.addEventListener('input', function () {
                 saveViewBtn.disabled = promptInput.value.trim() === '';
             });
+
         });
     </script>
 {% endblock %}

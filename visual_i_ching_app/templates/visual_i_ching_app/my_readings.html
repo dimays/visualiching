@@ -3,6 +3,13 @@
 
 {% block content %}
     <h1 class="display-4 serif-text">{{ user.username }}'s Readings</h1>
+    {% if not readings %}
+        <p><i>You have no readings yet...</i></p>
+        <div class="text-center">
+            <a href="{% url 'visual-i-ching-app-new-reading' %}" class="btn btn-primary">Create New Reading</a>
+        </div>
+    {% endif %}
+
     {% for reading in readings %}
     <div class="card my-4 shadow-sm">
         <div class="card-body">

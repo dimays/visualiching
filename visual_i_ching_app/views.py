@@ -1,10 +1,15 @@
+import stripe
+import time
 from django.shortcuts import redirect, render, get_object_or_404
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView
+from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from visual_i_ching_app.models import Trigram, Hexagram, HexagramLine, LineType, Reading, UserCreditHistory, UserDetail
+from django.conf import settings
+from django.http import HttpResponse
+from visual_i_ching_app.models import Hexagram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle
 from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm
 from visual_i_ching_app.services import AIService, CreditsService
 from random import randint
@@ -78,7 +83,124 @@ def purchase_credits(request):
         "hexagrams": hexagrams
     }
 
+    if settings.WORKING_ENV == 'dev':
+        context['price_id_1'] = 'price_1NKpAOCJ0XLbd0Hfp66vUE5U'
+        context['price_id_2'] = 'price_1NKpAOCJ0XLbd0Hfp66vUE5U'
+        context['price_id_3'] = 'price_1NKpAOCJ0XLbd0Hfp66vUE5U'
+        context['price_id_4'] = 'price_1NKpAOCJ0XLbd0Hfp66vUE5U'
+        context['price_id_5'] = 'price_1NKpAOCJ0XLbd0Hfp66vUE5U'
+    else:
+        context['price_id_1'] = 'price_1NNRdOCJ0XLbd0HfW7N4tujj'
+        context['price_id_2'] = 'price_1NNRhRCJ0XLbd0Hfm6key1a2'
+        context['price_id_3'] = 'price_1NNRlbCJ0XLbd0HfmSonkoTu'
+        context['price_id_4'] = 'price_1NNRoLCJ0XLbd0HfOQouXRln'
+        context['price_id_5'] = 'price_1NNRshCJ0XLbd0HfVilbcXws'
+
     return render(request, 'visual_i_ching_app/purchase_credits.html', context=context)
+
+@login_required
+def checkout(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    price_id = request.GET.get('price_id')
+    if request.method == 'POST':
+        checkout_session = stripe.checkout.Session.create(
+        line_items=[
+                {
+                    'price': f'{price_id}',
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            customer_creation='always',
+            success_url = settings.REDIRECT_DOMAIN + 'payment_successful/?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url = settings.REDIRECT_DOMAIN + 'payment_cancelled/',
+        )
+        return redirect(checkout_session.url, code=303)
+    
+    context = {
+        "price_id": price_id,
+        "price_id_1": "price_1NNRdOCJ0XLbd0HfW7N4tujj",
+        "price_id_2": "price_1NNRhRCJ0XLbd0Hfm6key1a2",
+        "price_id_3": "price_1NNRlbCJ0XLbd0HfmSonkoTu",
+        "price_id_4": "price_1NNRoLCJ0XLbd0HfOQouXRln",
+        "price_id_5": "price_1NNRshCJ0XLbd0HfVilbcXws"
+    }
+
+    return render(request, 'visual_i_ching_app/checkout.html', context=context)
+
+@login_required
+def payment_successful(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    checkout_session_id = request.GET.get('session_id', None)
+    session = stripe.checkout.Session.retrieve(checkout_session_id)
+    customer = stripe.Customer.retrieve(session.customer)
+    UserPayment.objects.create(
+        user=request.user,
+        is_success=False,
+        stripe_checkout_id=checkout_session_id
+        )
+
+    return render(request, 'visual_i_ching_app/payment_successful.html', {'customer': customer})
+
+@login_required
+def payment_cancelled(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    checkout_session_id = request.GET.get('session_id', None)
+    UserPayment.objects.create(
+        user=request.user,
+        is_success=False,
+        stripe_checkout_id=checkout_session_id
+        )
+    
+    return render(request, 'visual_i_ching_app/payment_cancelled.html')
+
+@csrf_exempt
+def stripe_webhook(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    time.sleep(10)
+    payload = request.body
+    signature_header = request.META['HTTP_STRIPE_SIGNATURE']
+    webhook_secret = 'whsec_ba7b149887cf5c927080ced1b083032b4be084fc8146b871d2a851fa3b1a768f'
+    # webhook_secret = settings.STRIPE_WEBHOOK_SECRET
+    event = None
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, signature_header, webhook_secret
+        )
+    except ValueError as e:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        session_id = session.get('id', None)
+        line_items = stripe.checkout.Session.list_line_items(session_id, limit=1)
+        price_id = line_items['data'][0]['price']['id']
+        print(line_items)
+        print(price_id)
+        time.sleep(15)
+
+        user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
+        user_payment.is_success = True
+        user_payment.save()
+        print(user_payment)
+
+        user = user_payment.user
+        print(user)
+
+        credit_bundle = CreditBundle.objects.get(stripe_price_id=price_id)
+        print(credit_bundle)
+
+        CreditsService.add_credits(
+            user,
+            credit_bundle.num_credits,
+            'Purchase',
+            user_payment
+        )
+    
+    return HttpResponse(status=200)
+
 
 # My Readings (view all, and only, your own readings)
 @method_decorator(login_required, name='dispatch')
@@ -225,6 +347,18 @@ class NewReadingView(View):
         }
         
         return render(request, self.template_name, context)
+
+# Add AI Interpretation to Reading
+@login_required
+def update_interpretation(request, reading_id):
+    reading = Reading.objects.get(reading_id=reading_id)
+    ai_interpretation = AIService.generate_interpretation(reading)
+    reading.gpt_interpretation = ai_interpretation
+    reading.save()
+
+    CreditsService.deduct_credit(request.user)
+
+    return redirect('visual-i-ching-app-reading', pk=reading.reading_id)
 
 # Edit Notes
 @login_required

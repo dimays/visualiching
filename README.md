@@ -42,7 +42,8 @@ This application is built on the following tech stack:
 ## Installation and Local Dev Setup
 To run VisualIChing locally, follow these steps:
 
-1. Clone the repository
+
+### 1. Clone the repository
 
 Open your terminal and navigate to whatever parent directory you'd like to clone this Git repo into.
 This example assumes you will add this repo directly to your Desktop.
@@ -52,13 +53,15 @@ cd ~/Desktop
 git clone https://github.com/yourusername/visualiching.git
 ```
 
-2. Change into the project directory
+
+### 2. Change into the project directory
 
 ```
 cd visualiching
 ```
 
-3. Create and activate a virtual environment
+
+### 3. Create and activate a virtual environment
 
 You can use any environment manager you prefer (conda, pyenv, etc.), and name the environemnt anything you'd like. For simplicity, this example uses the Python-native venv environment manager.
 
@@ -67,14 +70,16 @@ python -m venv visualiching_env
 source visualiching_env/bin/activate
 ```
 
-4. Upgrade pip and install the required dependencies
+
+### 4. Upgrade pip and install the required dependencies
 
 ```
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-5. Create a .env file to store your dev environment variables
+
+### 5. Create a .env file to store your dev environment variables
 
 Your .env file should live in the top-level directory of the project (same as the manage.py file) and must include the following variables:
 
@@ -85,15 +90,16 @@ Your .env file should live in the top-level directory of the project (same as th
 | WORKING_ENV | N/A | Required for `settings.py` config handling, should be set to `dev` |
 | OPENAI_API_KEY | [OpenAI](https://platform.openai.com/docs/api-reference) | AIService (AI-Assisted Interpretations), any net-new AI feature |
 | VISUALICHING_SENDGRID_API_KEY | [Sendgrid](https://docs.sendgrid.com/) | Reset Password, any net-new email notification feature |
-| STRIPE_SECRET_KEY | [Stripe](https://stripe.com/docs/api) | CreditsService, Stripe Checkout inegration, local testing |
-| STRIPE_PUBLISHABLE_KEY | [Stripe](https://stripe.com/docs/api) | CreditsService, Stripe Checkout integration, published testing |
+| STRIPE_SECRET_KEY | [Stripe](https://stripe.com/docs/api) | Stripe Checkout inegration |
+| STRIPE_PUBLISHABLE_KEY | [Stripe](https://stripe.com/docs/api) | Stripe Checkout integration |
+| STRIPE_WEBHOOK_SECRET | [Stripe](https://stripe.com/docs/api) | Stripe Checkout integration |
+
+You can use the .envexample file in this repo as a template.
 
 *Note: You are responsible for creating any necessary accounts and procuring API keys for local use and/or development.*
 
 
-6. Set up a local 'dev' database
-
-*Note: If you would prefer using your own Postgres database instead, you can first add a record in the .env file for the DATABASE_URL variable, set to the database connection URL for your pgdb, and VisualIChing will automatically use that connection instead of creating a local sqlite database. This is the type of database connection used in production.*
+### 6. Set up a local 'dev' database
 
 This automatically creates a sqlite database in the top-level directory of the project and creates all of the models necessary for running VisualIChing.
 
@@ -102,31 +108,38 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-7. Create a superuser for admin control over your local database:
+*Note: If you would prefer using your own Postgres database instead, you can first add a record in the .env file for the DATABASE_URL variable, set to the database connection URL for your pgdb, and VisualIChing will automatically use that connection instead of creating a local sqlite database. This is the type of database connection used in production.*
+
+
+### 7. Create a superuser for admin control over your local database:
 
 ```
 python manage.py createsuperuser
 ```
 
-8. Pre-populate your dev database with dev dummy data, including Users, Credits, Readings, and all the core data models (Hexagrams, HexagramLines, Trigrams, Line Types)
+
+### 8. Pre-populate your dev database with dev dummy data, including Users, Credits, Readings, and all the core data models (Hexagrams, HexagramLines, Trigrams, Line Types)
 
 ```
 python visual_i_ching_app/devtools/add_dummy_data.py
 ```
 
-9. Collect static files to serve up locally
+
+### 9. Collect static files to serve up locally
 
 ```
 python manage.py collectstatic
 ```
 
-10. Start the development server
+
+### 10. Start the development server
 
 ```
 python manage.py runserver
 ```
 
-11. Open your browser and navigate to http://localhost:8000 to access VisualIChing. You can login using the superuser credentials you created in step 7.
+
+### 11. Open your browser and navigate to http://localhost:8000 to access VisualIChing. You can login using the superuser credentials you created in step 7.
 
 
 ## Contributing

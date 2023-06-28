@@ -13,9 +13,20 @@
     {% for reading in readings %}
     <div class="card my-4 shadow-sm">
         <div class="card-body">
-            <h4 class="card-title serif-text">Reading on {{ reading.created_at|date:'n/j/y' }}</h4>
-            <p class="card-text"><i>{{ reading.prompt }}</i></p>
+            <h4 class="card-title serif-text mb-3">Reading on {{ reading.created_at|date:'n/j/y' }}</h4>
+            <h6 class="serif-text">My Prompt</h6>
+            <p class="card-text"><i>{{ reading.prompt|linebreaks }}</i></p>
             <hr>
+            {% if reading.gpt_interpretation %}
+            <h6 class="serif-text">AI Interpretation</h6>
+            <p class="card-text"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
+            <hr>
+            {% endif %}
+            {% if reading.user_notes %}
+            <h6 class="serif-text">My Notes</h6>
+            <p class="card-text"><i>{{ reading.user_notes|linebreaks }}</i></p>
+            <hr>
+            {% endif %}
             <div class="container">
                 <div class="row">
                     {% if reading.resulting_hexagram %}

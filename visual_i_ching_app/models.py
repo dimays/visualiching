@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Trigram(models.Model):
     trigram_id = models.BigAutoField(
@@ -375,6 +376,7 @@ class UserDetail(models.Model):
         db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
         )
     current_credits = models.IntegerField(
+        default=0,
         db_comment="Represents this user's current number of credits available (1 credit can be exchanged for 1 AI-assisted interpretation on a reading)"
         )
     created_at = models.DateTimeField(
@@ -402,35 +404,105 @@ class UserDetail(models.Model):
         return str_rep
 
 
+class UserPayment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that is checking out"
+        )
+    is_success = models.BooleanField(
+        default=False,
+        db_comment="Boolean indicating whether or not the payment was successful."
+        )
+    stripe_checkout_id = models.CharField(
+        max_length=500,
+        db_comment="External identifier from Stripe representing the checkout."
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "user_payments"
+        db_table_comment = "A historical record for each Stripe payment, including an initial record created at the time of user creation."
+        ordering = ['user', '-created_at']
+    
+    def __str__(self):
+        str_rep = f"{self.user.username}'s Payment at {self.created_at} ({self.stripe_checkout_id})"
+        return str_rep
+
+
+class CreditBundle(models.Model):
+    num_credits = models.SmallIntegerField(
+        db_comment = "Represents the number of AI Interpretation Credits included in this bundle."
+        )
+    price = models.SmallIntegerField(
+        db_comment = "Represents the price in dollars of this bundle."
+        )
+    price_per_credit = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        db_comment = "Represents the price in dollars of each credit in this bundle."
+        )
+    stripe_price_id = models.CharField(
+        max_length=50,
+        db_comment="External identifier from Stripe representing the unique Price object for this bundle."
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "credit_bundles"
+        db_table_comment = "A record containing details for each credit bundle offered on visualiching.com."
+    
+    def __str__(self):
+        str_rep = f"{self.num_credits} credit(s) for ${self.price} (${self.price_per_credit} per credit)"
+        return str_rep
+
+
 class UserCreditHistory(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
         )
-    history_type = models.TextField(
+    history_type = models.CharField(
+        max_length=500,
         db_comment="String indicating the type of credit event this record represents (eg. 'Purchase', 'Redemption', etc.)"
         )
     credits_amount = models.IntegerField(
         db_comment="Integer representing the number of credits added to or deducted from the user's account"
         )
-    stripe_payment_intent_id = models.TextField(
+    user_payment = models.ForeignKey(
+        UserPayment,
         blank=True,
         null=True,
         default=None,
-        db_comment="Only populated for 'Purchase' records, indicating the Stripe Payment Intent related to this credit bundle purchase"
-        )
-    credits_bundle_name = models.TextField(
-        blank=True,
-        null=True,
-        default=None,
-        db_comment="Only populated for 'Purchase' records, indicating the name of the item purchased (eg. '$5 for 10')"
-        )
-    payment_amount = models.IntegerField(
-        blank=True,
-        null=True,
-        default=None,
-        db_comment="Only populated for 'Purchase' records, indicating the total amount spent on this purchase in cents"
+        on_delete=models.CASCADE,
+        db_comment="Only populated for 'Purchase' records, foreign key referencing user_payments.id record indicating the Stripe Checkout event related to this credit bundle purchase"
         )
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -455,3 +527,10 @@ class UserCreditHistory(models.Model):
     def __str__(self):
         str_rep = f"{self.user.username} | {self.history_type} at {self.created_at} ({self.credits_amount} credits)"
         return str_rep
+    
+
+@receiver(post_save, sender=User)
+def create_user_detail(sender, instance, created, **kwargs):
+    if created:
+        UserDetail.objects.create(user=instance)
+    return

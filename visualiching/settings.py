@@ -19,6 +19,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 SECRET_KEY = os.getenv('SECRET_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 DEBUG = strtobool(os.getenv('DEBUG_FLAG'))
 WORKING_ENV = os.getenv('WORKING_ENV').lower()
@@ -152,3 +153,8 @@ AUTO_LOGOUT = {
     'MESSAGE': 'You have been automatically logged out, please login again.',
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True, # refresh page if browser window open
 }
+
+if WORKING_ENV == 'dev':
+    REDIRECT_DOMAIN = 'http://localhost:8000/'
+else:
+    REDIRECT_DOMAIN = 'https://www.visualiching.com/'

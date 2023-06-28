@@ -20,7 +20,10 @@
             </div>
             {% elif current_credits > 0 %}
             <div class="text-center my-3">
-                <a href="#" class="btn btn-primary btn-lg" role="button">Get AI Interpretation</a>
+                <form method="POST" action="{% url 'visual-i-ching-app-update-interpretation' reading.reading_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg" name="get_ai_interpretation" id="get-ai-interpretation-btn" data-bs-toggle="modal" data-bs-target="#ai-modal">Get AI Interpretation</button>
+                </form>
                 <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
             </div>
             {% else %}
@@ -44,6 +47,25 @@
                 <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Add Notes</a>
             </div>
             {% endif %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="ai-modal" tabindex="-1" aria-labelledby="ai-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title serif-text" id="ai-modal-label">Interpreting the situation...</h5>
+                    <div class="clearfix">
+                        <div class="spinner-border float-end" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid" src="{% static 'visual_i_ching_app/img/interpretation_progress.png' %}">
+                    <p class="text-center text-muted my-2"><i>Please wait while your reading is completed.</i></p>
+                </div>
+            </div>
         </div>
     </div>
     

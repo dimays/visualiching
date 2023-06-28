@@ -22,31 +22,31 @@
                     <td>1 Credit</td>
                     <td>$1</td>
                     <td>$1</td>
-                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                    <td class="text-center"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal1">Buy Now</button></td>
                 </tr>
                 <tr>
                     <td>10 Credits</td>
                     <td>$5</td>
                     <td>$0.50</td>
-                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                    <td class="text-center"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal2">Buy Now</button></td>
                 </tr>
                 <tr>
                     <td>50 Credits</td>
                     <td>$10</td>
                     <td>$0.20</td>
-                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                    <td class="text-center"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal3">Buy Now</button></td>
                 </tr>
                 <tr>
                     <td>200 Credits</td>
                     <td>$20</td>
                     <td>$0.10</td>
-                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                    <td class="text-center"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal4">Buy Now</button></td>
                 </tr>
                 <tr>
                     <td>1,000 Credits</td>
                     <td>$50</td>
                     <td>$0.05</td>
-                    <td><a href="#" class="btn btn-primary">Buy Now</a></td>
+                    <td class="text-center"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal5">Buy Now</button></td>
                 </tr>
             </tbody>
         </table>
@@ -59,4 +59,75 @@
             <p>Once your payment is successfully processed through Stripe, you'll receive the purchased credits, allowing you to take full advantage of the services or features offered by the platform. Stripe Checkout provides a secure and reliable payment solution, giving you peace of mind while making your online purchases.</p>
         </small>
     </div>
+
+    <div class="modal fade" id="checkoutModal1" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title serif-text" id="checkoutModalLabel1">Purchase AI Interpretation Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include 'visual_i_ching_app/product_checkout.html' with price_id=price_id_1 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkoutModal2" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel2" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel2">Purchase AI Interpretation Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include 'visual_i_ching_app/product_checkout.html' with price_id=price_id_2 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkoutModal3" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel3" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel3">Purchase AI Interpretation Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include 'visual_i_ching_app/product_checkout.html' with price_id=price_id_3 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkoutModal4" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel4" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel4">Purchase AI Interpretation Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include 'visual_i_ching_app/product_checkout.html' with price_id=price_id_4 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="checkoutModal5" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel5" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkoutModalLabel5">Purchase AI Interpretation Credits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include 'visual_i_ching_app/product_checkout.html' with price_id=price_id_5 %}
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

@@ -95,7 +95,7 @@
         {% if reading.resulting_hexagram %}
         <div class="col-lg-4 my-3">
             <h4 class="serif-text text-center">Initial Hexagram</h4>
-            <p class="text-center"><small>Reveals the symbolic representation of the initial situation or question.</small></p>
+            <p class="text-center"><small>Reveals the symbolic depiction of the initial situation.</small></p>
             <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3">
             <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
             <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
@@ -388,5 +388,31 @@
         </div>
         <div class="col-lg-2 my-3"></div>
         {% endif %}
+    </div>
+    <div class="row my-3">
+        <div class="text-center">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReadingModal">Delete Reading</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteReadingModal" tabindex="-1" aria-labelledby="deleteReadingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteReadingModalLabel">Delete Reading</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to permanently delete this reading?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'visual-i-ching-app-delete-reading' reading_id=reading.reading_id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

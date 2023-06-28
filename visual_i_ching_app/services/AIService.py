@@ -61,6 +61,11 @@ You prioritize simple and straightforward explanations with a \
 personal and empathetic tone.
 All of your responses MUST be directed to the reader in the \
 SECOND PERSON (ie. "You" statements).
+All of your responses MUST be formatted simply and be appropriate \
+to showcase as an interpretation of this reading on a website.
+All of your responses MUST reference the relevant portions of \
+the provided reading details when explaining the interpretation \
+of the reading.
 """
 
 UNCHANGING_HEX = """

@@ -10,6 +10,7 @@ urlpatterns = [
     path('my_readings/', ReadingListView.as_view(), name='visual-i-ching-app-my-readings'),
     path('new_reading/', NewReadingView.as_view(), name='visual-i-ching-app-new-reading'),
     path('reading/<int:pk>/', ReadingDetailView.as_view(), name='visual-i-ching-app-reading'),
+    path('delete_reading/<int:reading_id>/', views.delete_reading, name='visual-i-ching-app-delete-reading'),
     path('delete_account', views.delete_account, name='visual-i-ching-app-delete-account'),
     path('reading/<int:pk>/edit_notes/', views.update_notes, name='visual-i-ching-app-edit-notes'),
     path('reading/<int:reading_id>/update_interpretation/', views.update_interpretation, name='visual-i-ching-app-update-interpretation'),

@@ -1,4 +1,4 @@
-# Visual I Ching
+# VisualIChing
 
 An open-source Django application created by David Mays, 2023
 
@@ -85,18 +85,19 @@ Your .env file should live in the top-level directory of the project (same as th
 
 | Environment Variable | API Provider | Which Services/Features This Variable is Required For |
 | -- | -- | -- |
-| SECRET_KEY | N/A | Required for local hosting; you can generate one easily at [Djecrety](https://djecrety.ir/) |
-| DEBUG_FLAG | N/A | Required for `settings.py` config handling, should be set to `True` |
-| WORKING_ENV | N/A | Required for `settings.py` config handling, should be set to `dev` |
-| OPENAI_API_KEY | [OpenAI](https://platform.openai.com/docs/api-reference) | AIService (AI-Assisted Interpretations), any net-new AI feature |
-| VISUALICHING_SENDGRID_API_KEY | [Sendgrid](https://docs.sendgrid.com/) | Reset Password, any net-new email notification feature |
-| STRIPE_SECRET_KEY | [Stripe](https://stripe.com/docs/api) | Stripe Checkout inegration |
-| STRIPE_PUBLISHABLE_KEY | [Stripe](https://stripe.com/docs/api) | Stripe Checkout integration |
-| STRIPE_WEBHOOK_SECRET | [Stripe](https://stripe.com/docs/api) | Stripe Checkout integration |
+| SECRET_KEY | N/A | REQUIRED: for local hosting; you can generate one easily at [Djecrety](https://djecrety.ir/) |
+| DEBUG_FLAG | N/A | REQUIRED: for `settings.py` config handling, should be set to `True` |
+| WORKING_ENV | N/A | REQUIRED: for `settings.py` config handling, should be set to `dev` |
+| OPENAI_API_KEY | [OpenAI](https://platform.openai.com/docs/) | OPTIONAL: AIService (AI-Assisted Interpretations), any net-new AI feature |
+| VISUALICHING_SENDGRID_API_KEY | [Sendgrid](https://docs.sendgrid.com/) | OPTIONAL: Reset Password, any net-new email notification feature |
+| STRIPE_SECRET_KEY | [Stripe](https://stripe.com/docs/) | OPTIONAL: Stripe Checkout inegration |
+| STRIPE_PUBLISHABLE_KEY | [Stripe](https://stripe.com/docs/) | OPTIONAL: Stripe Checkout integration |
+| STRIPE_WEBHOOK_SECRET | [Stripe](https://stripe.com/docs/) | OPTIONAL: Stripe Checkout integration |
+| STRIPE_LOCAL_LISTENER_SECRET | [Stripe](https://stripe.com/docs/) | OPTIONAL: Stripe Checkout integration |
 
 You can use the .envexample file in this repo as a template.
 
-*Note: You are responsible for creating any necessary accounts and procuring API keys for local use and/or development.*
+*Note: You are responsible for creating and configuring any accounts and API keys for local use and/or development on the features you wish to modify.*
 
 
 ### 6. Set up a local 'dev' database
@@ -138,8 +139,11 @@ python manage.py collectstatic
 python manage.py runserver
 ```
 
+See [this Django documentation](https://docs.djangoproject.com/en/4.2/ref/django-admin/#runserver) for more information on running a local server.
 
-### 11. Open your browser and navigate to http://localhost:8000 to access VisualIChing. You can login using the superuser credentials you created in step 7.
+### 11. Open VisualIChing locally
+
+Open your browser and navigate to http://localhost:8000 to access VisualIChing locally. You can login using the superuser credentials you created in step 7.
 
 
 ## Contributing

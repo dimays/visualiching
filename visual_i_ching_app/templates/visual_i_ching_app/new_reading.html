@@ -43,6 +43,7 @@
             <div class="col-lg-4 my-3">
                 <h3 class="display-6 serif-text">Step 3: AI Assist</h3>
                 <p>Use the power of AI to assist in interpreting the text of the I Ching specifically for your prompt.</p>
+                {% if current_credits != 0 %}
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="ai-assist-checkbox" name="ai_assist_checkbox" value="checked" checked>
                     <label class="form-check-label" for="ai-assist-checkbox">
@@ -50,6 +51,12 @@
                         <small class="text-secondary">(costs 1 credit)</small>
                     </label>
                 </div>
+                {% else %}
+                <p class="text-center text-muted"><small>You have no credits available. Buy more to get AI assistance!</small></p>
+                <div class="text-center">
+                    <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
+                </div>
+                {% endif %}
             </div>
             <div class="col-lg-4 my-3">
                 <h3 class="display-6 serif-text">Step 4: Complete</h3>

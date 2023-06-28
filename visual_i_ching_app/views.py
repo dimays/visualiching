@@ -160,8 +160,12 @@ def stripe_webhook(request):
     time.sleep(10)
     payload = request.body
     signature_header = request.META['HTTP_STRIPE_SIGNATURE']
-    webhook_secret = 'whsec_ba7b149887cf5c927080ced1b083032b4be084fc8146b871d2a851fa3b1a768f'
-    # webhook_secret = settings.STRIPE_WEBHOOK_SECRET
+
+    if settings.WORKING_ENV == 'dev':
+        webhook_secret = settings.STRIPE_LOCAL_LISTENER_SECRET
+    else:
+        webhook_secret = settings.STRIPE_WEBHOOK_SECRET
+
     event = None
     try:
         event = stripe.Webhook.construct_event(
@@ -209,7 +213,6 @@ class ReadingListView(ListView):
     template_name = 'visual_i_ching_app/my_readings.html'
     context_object_name = 'readings'
     ordering = ['-created_at']
-
 
 # View Single Reading
 @method_decorator(login_required, name='dispatch')
@@ -263,10 +266,14 @@ class NewReadingView(View):
     template_name = 'visual_i_ching_app/new_reading.html'
 
     def get(self, request):
+        user_details = get_user_details(request)
+        current_credits = int(user_details[0].split(" ")[0])
         form = ReadingForm()
         context = {
             'form': form,
+            'current_credits': current_credits
         }
+        print(current_credits)
         return render(request, self.template_name, context)
 
     def post(self, request):
@@ -347,6 +354,22 @@ class NewReadingView(View):
         }
         
         return render(request, self.template_name, context)
+
+# Delete Reading
+@login_required
+def delete_reading(request, reading_id):
+    if request.method == 'POST':
+        reading = get_object_or_404(Reading, reading_id=reading_id)
+
+        if request.user.id != reading.user_id:
+            raise PermissionDenied
+
+        reading.delete()
+
+        return redirect('visual-i-ching-app-my-readings')
+    
+    return render(request, 'my_readings.html')
+    
 
 # Add AI Interpretation to Reading
 @login_required

@@ -4,6 +4,14 @@
 {% block content %}
     <h1 class="display-4 serif-text">{{ user.username }}'s Account</h1>
     <p class="text-muted">View and manage some basic details about your account.</p>
+    {% if no_credit_history %}
+    <div class="text-center alert alert-success">
+        <strong>You are eligible for one free credit. Click the button below to try out AI interpreations for free!</strong>
+        <div>
+            <a href="{% url 'visual-i-ching-app-redeem-credit-offer' %}" class="btn btn-primary my-2">Get Free Credit</a>
+        </div>
+    </div>
+    {% endif %}
     <table class="table table-striped">
         <thead>
             <tr>

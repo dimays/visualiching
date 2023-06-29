@@ -24,3 +24,6 @@ def deduct_credit(user):
     add_credits(user, -1, 'Redemption')
 
     return
+
+def redeem_credit_offer(user):
+    add_credits(user, 1, 'Credit Offer')

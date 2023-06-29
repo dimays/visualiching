@@ -1,15 +1,18 @@
 import stripe
 import time
+import pytz
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import View, ListView, DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.http import HttpResponse
-from visual_i_ching_app.models import Hexagram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle
+from visual_i_ching_app.models import Hexagram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle, UserCreditHistory
 from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm
 from visual_i_ching_app.services import AIService, CreditsService
 from random import randint
@@ -43,6 +46,12 @@ def get_user_details(request):
 
     return current_credits, purchase_btn_text
 
+def user_has_no_credit_history(request):
+    user_id = request.user.id
+    user_credit_history_exists = UserCreditHistory.objects.filter(user_id=user_id).exists()
+    print(UserCreditHistory.objects.filter(user_id=user_id))
+    print(not user_credit_history_exists)
+    return not user_credit_history_exists
 
 # Home
 def home(request):
@@ -70,17 +79,32 @@ def about(request):
 
 # Purchase Credits
 @login_required
+def redeem_credit_offer(request):
+    no_credit_history = user_has_no_credit_history(request)
+
+    if no_credit_history:
+        CreditsService.redeem_credit_offer(request.user)
+    else:
+        messages.warning(request, "You have past credit activity and are not eligible for this credit offer.")
+
+    return redirect('visual-i-ching-app-my-account')
+
+
+@login_required
 def purchase_credits(request):
     user_details = get_user_details(request)
     current_credits = user_details[0]
     purchase_btn_text = user_details[1]
+    no_credit_history = user_has_no_credit_history(request)
+    print(no_credit_history)
 
     hexagrams = Hexagram.objects.all()
 
     context = {
         "current_credits": current_credits,
         "purchase_btn_text": purchase_btn_text,
-        "hexagrams": hexagrams
+        "hexagrams": hexagrams,
+        "no_credit_history": no_credit_history
     }
 
     if settings.WORKING_ENV == 'dev':
@@ -420,12 +444,14 @@ def my_account(request):
     purchase_btn_text = user_details[1]
     total_readings = count_readings(request)
     total_ai_interpretations = count_ai_interpretations(request)
+    no_credit_history = user_has_no_credit_history(request)
 
     context = {
         "current_credits": current_credits,
         "purchase_btn_text": purchase_btn_text,
         "total_readings": total_readings,
-        "total_ai_interpretations": total_ai_interpretations
+        "total_ai_interpretations": total_ai_interpretations,
+        "no_credit_history": no_credit_history
     }
 
     return render(request, 'visual_i_ching_app/my_account.html', context=context)

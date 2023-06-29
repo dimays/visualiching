@@ -5,48 +5,50 @@
 {% block content %}
     <div class="row">
         <h2 class="display-4 serif-text mb-5">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
-        <hr>
-        <div class="my-3">
-            <h3 class="serif-text text-center">My Prompt</h3>
-            <div class="px-3">
-                <p class="my-3"><i>{{ reading.prompt|linebreaks }}</i></p>
+        <p class="text-muted"><i>{{ reading.created_at|date:'n/j/y g:i a' }} UTC</i></p>
+        <div class="rounded border shadow py-3 my-3">
+            <div class="my-3">
+                <h3 class="serif-text text-center">My Prompt</h3>
+                <div class="px-3">
+                    <p class="my-3"><i>{{ reading.prompt|linebreaks }}</i></p>
+                </div>
             </div>
-        </div>
-        <div class="my-3">
-            <h3 class="serif-text text-center">AI Interpretation</h3>
-            {% if reading.gpt_interpretation %}
-            <div class="px-3">
-                <p class="my-3"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
+            <div class="my-3">
+                <h3 class="serif-text text-center">AI Interpretation</h3>
+                {% if reading.gpt_interpretation %}
+                <div class="px-3">
+                    <p class="my-3"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
+                </div>
+                {% elif current_credits > 0 %}
+                <div class="text-center my-3">
+                    <form method="POST" action="{% url 'visual-i-ching-app-update-interpretation' reading.reading_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg" name="get_ai_interpretation" id="get-ai-interpretation-btn" data-bs-toggle="modal" data-bs-target="#ai-modal">Get AI Interpretation</button>
+                    </form>
+                    <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
+                </div>
+                {% else %}
+                <div class="text-center my-3">
+                    <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
+                    <p class="text-muted"><small>Each credit gives you one AI Interpretation for a reading (you currently have 0)</small></p>
+                </div>
+                {% endif %}
             </div>
-            {% elif current_credits > 0 %}
-            <div class="text-center my-3">
-                <form method="POST" action="{% url 'visual-i-ching-app-update-interpretation' reading.reading_id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-lg" name="get_ai_interpretation" id="get-ai-interpretation-btn" data-bs-toggle="modal" data-bs-target="#ai-modal">Get AI Interpretation</button>
-                </form>
-                <p class="text-muted"><small>Costs 1 credit (you currently have {{ current_credits }})</small></p>
+            <div class="my-3">
+                <h3 class="serif-text text-center">My Notes</h3>
+                {% if reading.user_notes %}
+                <div class="px-3">
+                    <p class="my-3"><i>{{ reading.user_notes|linebreaks }}</i></p>
+                </div>
+                <div class="text-center my-3">
+                    <a href="#" class="btn btn-secondary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Edit Notes</a>
+                </div>
+                {% else %}
+                <div class="text-center my-3">
+                    <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Add Notes</a>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="text-center my-3">
-                <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
-                <p class="text-muted"><small>Each credit gives you one AI Interpretation for a reading (you currently have 0)</small></p>
-            </div>
-            {% endif %}
-        </div>
-        <div class="my-3">
-            <h3 class="serif-text text-center">My Notes</h3>
-            {% if reading.user_notes %}
-            <div class="px-3">
-                <p class="my-3"><i>{{ reading.user_notes|linebreaks }}</i></p>
-            </div>
-            <div class="text-center my-3">
-                <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Edit Notes</a>
-            </div>
-            {% else %}
-            <div class="text-center my-3">
-                <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Add Notes</a>
-            </div>
-            {% endif %}
         </div>
     </div>
 
@@ -389,7 +391,8 @@
         <div class="col-lg-2 my-3"></div>
         {% endif %}
     </div>
-    <div class="row my-3">
+    <hr>
+    <div class="row my-4">
         <div class="text-center">
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReadingModal">Delete Reading</button>
         </div>

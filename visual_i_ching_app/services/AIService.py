@@ -149,6 +149,26 @@ Resulting Hexagram:
 {}
 """
 
+SIMPLE_SUMMARY = """
+The information provided below represents key elements of this \
+reading.
+Please summarize all of this information in a concise and \
+meaningful way that provides guidance, direction, and clarity for \
+the reader, and is personalized to their prompt.
+
+Prompt:
+{}
+
+Initial Hexagram:
+{}
+
+Changing Lines:
+{}
+
+Resulting Hexagram:
+{}
+"""
+
 
 # Functions & Classes
 def get_system_message():
@@ -221,6 +241,120 @@ class ChatCompletion:
         estimated_cost = (self.tokens_used / 1000) * 0.2
 
         return estimated_cost
+
+
+class SimipleInterpretation:
+    def __init__(self, reading):
+        self.reading = reading
+        self.tokens_used = 0
+        self.cost = 0
+        self.summary = self.get_summary()
+        self.content = self.get_content()
+
+    def is_changing(self):
+        """Returns True if there are changes in this hexagram."""
+        if self.reading.resulting_hexagram:
+            return True
+        return False
+
+    def get_unchanging_summary(self):
+        hex_details = [
+            self.reading.starting_hexagram.english_translation,
+            self.reading.starting_hexagram.description,
+            self.reading.starting_hexagram.upper_trigram.english_translation,
+            self.reading.starting_hexagram.upper_trigram.description,
+            self.reading.starting_hexagram.lower_trigram.english_translation,
+            self.reading.starting_hexagram.lower_trigram.description
+        ]
+
+        hex_details_str = HEXAGRAM_TEMPLATE.format(*hex_details)
+
+        msg_params = [
+            self.reading.prompt,
+            hex_details_str
+        ]
+        
+        completion = ChatCompletion(
+            UNCHANGING_HEX,
+            msg_params
+        )
+
+        self.cost += completion.cost
+        self.tokens_used += completion.tokens_used
+
+        return completion.content
+
+    def get_summary(self):
+        """Returns a single string with a summary description,
+        based on the other component AI-assisted interpretations"""
+        if not self.is_changing():
+            return self.get_unchanging_summary()
+        
+        starting_hex_details = [
+            self.reading.starting_hexagram.english_translation,
+            self.reading.starting_hexagram.description,
+            self.reading.starting_hexagram.upper_trigram.english_translation,
+            self.reading.starting_hexagram.upper_trigram.description,
+            self.reading.starting_hexagram.lower_trigram.english_translation,
+            self.reading.starting_hexagram.lower_trigram.description
+        ]
+
+        resulting_hex_details = [
+            self.reading.resulting_hexagram.english_translation,
+            self.reading.resulting_hexagram.description,
+            self.reading.resulting_hexagram.upper_trigram.english_translation,
+            self.reading.resulting_hexagram.upper_trigram.description,
+            self.reading.resulting_hexagram.lower_trigram.english_translation,
+            self.reading.resulting_hexagram.lower_trigram.description
+        ]
+
+        starting_hex_details_str = HEXAGRAM_TEMPLATE.format(*starting_hex_details)
+        changing_line_details_str = self.get_changing_lines_descriptions()
+        resulting_hex_details_str = HEXAGRAM_TEMPLATE.format(*resulting_hex_details)
+
+        msg_params = [
+            self.reading.prompt,
+            starting_hex_details_str,
+            changing_line_details_str,
+            resulting_hex_details_str
+        ]
+
+        completion = ChatCompletion(
+            SIMPLE_SUMMARY,
+            msg_params
+        )
+
+        self.cost += completion.cost
+        self.tokens_used += completion.tokens_used
+
+        return completion.content
+
+    def get_changing_lines_descriptions(self):
+        """Returns a single string with formatted descriptions of 
+        each changing line to add to the ChatCompletion context 
+        of the reading summary"""
+        
+        descriptions = ""
+
+        position = 0
+        for value in self.reading.value_string:
+            position += 1
+            print(f"Evaluating position {position}: {value}")
+            if value in ('6', '9'):
+                hexagram_line = HexagramLine.objects.get(
+                    hexagram_id = self.reading.starting_hexagram,
+                    position = position
+                )
+                print(hexagram_line)
+                desc = hexagram_line.change_text + '\n' + hexagram_line.change_interpretation
+                descriptions += f"Line {position}: {desc}\n"
+
+        return descriptions
+
+    def get_content(self):
+        """Returns a formatted string representing the complete
+        AI-Assisted interpretation to be saved to the database"""
+        return self.summary.strip()
 
 
 class Interpretation:
@@ -437,7 +571,7 @@ def generate_interpretation(reading, debug=True):
     """Returns formatted text of an AI-assisted interpretation 
     generated from a Reading object"""
 
-    interpretation = Interpretation(reading)
+    interpretation = SimipleInterpretation(reading)
 
     if debug:
         print("INTERPRETATION DEBUGGING")

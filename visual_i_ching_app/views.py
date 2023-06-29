@@ -49,8 +49,6 @@ def get_user_details(request):
 def user_has_no_credit_history(request):
     user_id = request.user.id
     user_credit_history_exists = UserCreditHistory.objects.filter(user_id=user_id).exists()
-    print(UserCreditHistory.objects.filter(user_id=user_id))
-    print(not user_credit_history_exists)
     return not user_credit_history_exists
 
 # Home
@@ -96,7 +94,6 @@ def purchase_credits(request):
     current_credits = user_details[0]
     purchase_btn_text = user_details[1]
     no_credit_history = user_has_no_credit_history(request)
-    print(no_credit_history)
 
     hexagrams = Hexagram.objects.all()
 

@@ -539,7 +539,7 @@ def create_user_detail(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=UserPayment)
 def process_user_payment(sender, instance, created, **kwargs):
-    if created and instance.is_success:
+    if created:
         stripe.api_key = settings.STRIPE_SECRET_KEY
         user = instance.user
         session_id = instance.stripe_checkout_id

@@ -153,11 +153,28 @@ def payment_successful(request):
     checkout_session_id = request.GET.get('session_id', None)
     session = stripe.checkout.Session.retrieve(checkout_session_id)
     customer = stripe.Customer.retrieve(session.customer)
-    UserPayment.objects.create(
+    user_payment = UserPayment.objects.create(
         user=request.user,
-        is_success=False,
+        is_success=True,
         stripe_checkout_id=checkout_session_id
         )
+    
+    user = request.user
+    line_items = stripe.checkout.Session.list_line_items(checkout_session_id, limit=1)
+    price_id = line_items['data'][0]['price']['id']
+
+    user_detail = UserDetail.objects.get(user=user)
+    credit_bundle = CreditBundle.objects.get(stripe_price_id=price_id)
+
+    user_detail.current_credits += credit_bundle.num_credits
+    user_detail.save()
+
+    CreditsService.add_credits(
+        user, 
+        credit_bundle.num_credits, 
+        'Purchase',
+        user_payment
+    )
 
     return render(request, 'visual_i_ching_app/payment_successful.html', {'customer': customer})
 
@@ -195,12 +212,7 @@ def stripe_webhook(request):
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        session_id = session.get('id', None)
-
-        user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
-        user_payment.is_success = True
-        user_payment.save()
+        print("Success!")
     
     return HttpResponse(status=200)
 

@@ -1,5 +1,4 @@
 import stripe
-import time
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import View, ListView, DetailView
 from django.views.decorators.csrf import csrf_exempt

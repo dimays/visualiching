@@ -536,27 +536,3 @@ def create_user_detail(sender, instance, created, **kwargs):
     if created:
         UserDetail.objects.create(user=instance)
     return
-
-@receiver(post_save, sender=UserPayment)
-def process_user_payment(sender, instance, created, **kwargs):
-    if created:
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        user = instance.user
-        session_id = instance.stripe_checkout_id
-        line_items = stripe.checkout.Session.list_line_items(session_id, limit=1)
-        price_id = line_items['data'][0]['price']['id']
-
-        user_detail = UserDetail.objects.get(user=user)
-        credit_bundle = CreditBundle.objects.get(stripe_price_id=price_id)
-
-        # Update user's current_credits
-        user_detail.current_credits += credit_bundle.num_credits
-        user_detail.save()
-
-        # Create a UserCreditHistory record
-        UserCreditHistory.objects.create(
-            user=user,
-            history_type='Purchase',
-            credits_amount=credit_bundle.num_credits,
-            user_payment=instance
-        )

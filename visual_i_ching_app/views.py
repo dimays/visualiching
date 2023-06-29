@@ -198,28 +198,10 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         session_id = session.get('id', None)
-        line_items = stripe.checkout.Session.list_line_items(session_id, limit=1)
-        price_id = line_items['data'][0]['price']['id']
-        print(line_items)
-        print(price_id)
 
         user_payment = UserPayment.objects.get(stripe_checkout_id=session_id)
         user_payment.is_success = True
         user_payment.save()
-        print(user_payment)
-
-        user = user_payment.user
-        print(user)
-
-        credit_bundle = CreditBundle.objects.get(stripe_price_id=price_id)
-        print(credit_bundle)
-
-        CreditsService.add_credits(
-            user,
-            credit_bundle.num_credits,
-            'Purchase',
-            user_payment
-        )
     
     return HttpResponse(status=200)
 

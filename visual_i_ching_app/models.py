@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Trigram(models.Model):
     trigram_id = models.BigAutoField(
@@ -140,6 +141,11 @@ class Hexagram(models.Model):
         max_length=100,
         db_comment="URL path to the 'Dall-E 2'-generated image for this hexagram"
         )
+    binary_value_string = models.CharField(
+        max_length=6,
+        default='000000',
+        db_comment="The values of each line represented as a string, ordered bottom to top (eg. '011001')"
+        )
     description = models.TextField(
         db_comment="Description of this hexagram"
         )
@@ -265,6 +271,10 @@ class LineType(models.Model):
     line_value = models.SmallIntegerField(
         db_comment="Represents the value that corresponds with this line type (6-9) as it relates to consulting the oracle with coins or yarrow stalks"
         )
+    binary_value = models.SmallIntegerField(
+        db_comment="Represents the binary value (0=yin, 1=yang) that corresponds with this line type as it relates to consulting the oracle with coins or yarrow stalks",
+        default=0
+        )
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_comment="Time (in UTC) at which this record was created"
@@ -285,7 +295,7 @@ class LineType(models.Model):
         db_table_comment = "A record for each type of line possible in an I Ching reading (ie. Old/Young Yin/Yang)"
 
     def __str__(self):
-        str_rep = f"Line Type | {self.name} ({self.line_value})"
+        str_rep = f"{self.name} ({self.line_value})"
         return str_rep
 
 
@@ -307,50 +317,32 @@ class Reading(models.Model):
         )
     resulting_hexagram = models.ForeignKey(
         Hexagram,
+        blank=True,
         null=True,
         default=None,
         on_delete=models.PROTECT,
         related_name='resulting_hexagram_ids',
         db_comment="Foreign key, references hexgrams.hexagram_id, represents the hexagram that results from the changes in this reading (if there are no changes, this value is null)"
         )
-    first_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='first_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the first (bottom) line of this hexagram"
-        )
-    second_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='second_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the second line of this hexagram"
-        )
-    third_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='third_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the third line of this hexagram"
-        )
-    fourth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='fourth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the fourth line of this hexagram"
-        )
-    fifth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='fifth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the fifth line of this hexagram"
-        )
-    sixth_line_type = models.ForeignKey(
-        LineType,
-        on_delete=models.PROTECT,
-        related_name='sixth_line_type_ids',
-        db_comment="Foreign key, references line_types.line_type_id, represents the type of the sixth (top) line of this hexagram"
+    value_string = models.CharField(
+        max_length=6,
+        default='888888',
+        db_comment="The values of each line represented as a string, ordered bottom to top (eg. '677869')"
         )
     prompt = models.TextField(
         db_comment="User-entered prompt for this reading"
+        )
+    user_notes = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Optional field that allows users to enter their own notes on this reading"
+        )
+    gpt_interpretation = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Optional field resulting from the user generating an AI Interpretation for this reading"
         )
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -375,3 +367,170 @@ class Reading(models.Model):
     def __str__(self):
         str_rep = f"{self.user.username}'s Reading: {self.prompt}"
         return str_rep
+    
+
+class UserDetail(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
+        )
+    current_credits = models.IntegerField(
+        default=0,
+        db_comment="Represents this user's current number of credits available (1 credit can be exchanged for 1 AI-assisted interpretation on a reading)"
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+
+    class Meta:
+        db_table = "user_details"
+        db_table_comment = "A record for each user, with columns for different user-level details, always meant to represent the user's current state"
+        ordering = ['user', '-updated_at']
+
+    def __str__(self):
+        str_rep = f"{self.user.username}'s Details ({self.current_credits} credits)"
+        return str_rep
+
+
+class UserPayment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that is checking out"
+        )
+    is_success = models.BooleanField(
+        default=False,
+        db_comment="Boolean indicating whether or not the payment was successful."
+        )
+    stripe_checkout_id = models.CharField(
+        max_length=500,
+        db_comment="External identifier from Stripe representing the checkout."
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "user_payments"
+        db_table_comment = "A historical record for each Stripe payment, including an initial record created at the time of user creation."
+        ordering = ['user', '-created_at']
+    
+    def __str__(self):
+        str_rep = f"{self.user.username}'s Payment at {self.created_at} ({self.stripe_checkout_id})"
+        return str_rep
+
+
+class CreditBundle(models.Model):
+    num_credits = models.SmallIntegerField(
+        db_comment = "Represents the number of AI Interpretation Credits included in this bundle."
+        )
+    price = models.SmallIntegerField(
+        db_comment = "Represents the price in dollars of this bundle."
+        )
+    price_per_credit = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        db_comment = "Represents the price in dollars of each credit in this bundle."
+        )
+    stripe_price_id = models.CharField(
+        max_length=50,
+        db_comment="External identifier from Stripe representing the unique Price object for this bundle."
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "credit_bundles"
+        db_table_comment = "A record containing details for each credit bundle offered on visualiching.com."
+    
+    def __str__(self):
+        str_rep = f"{self.num_credits} credit(s) for ${self.price} (${self.price_per_credit} per credit)"
+        return str_rep
+
+
+class UserCreditHistory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        db_comment="Foreign key, references Django's built-in users.id, represents the user that prepared this reading"
+        )
+    history_type = models.CharField(
+        max_length=500,
+        db_comment="String indicating the type of credit event this record represents (eg. 'Purchase', 'Redemption', etc.)"
+        )
+    credits_amount = models.IntegerField(
+        db_comment="Integer representing the number of credits added to or deducted from the user's account"
+        )
+    user_payment = models.ForeignKey(
+        UserPayment,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.CASCADE,
+        db_comment="Only populated for 'Purchase' records, foreign key referencing user_payments.id record indicating the Stripe Checkout event related to this credit bundle purchase"
+        )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        db_comment="Time (in UTC) at which this record was created"
+        )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        db_comment="Time (in UTC) at which this record was most recently updated"
+        )
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None,
+        db_comment="Time (in UTC) at which this record was 'soft-deleted' (flagged deleted)"
+        )
+    
+    class Meta:
+        db_table = "user_credit_history"
+        db_table_comment = "A historical record for each credit transaction, including credit purchases, credit grants from special offers, and credit redemptions from generating an AI-assisted interpretation for a reading"
+        ordering = ['user', '-created_at']
+
+    def __str__(self):
+        str_rep = f"{self.user.username} | {self.history_type} at {self.created_at} ({self.credits_amount} credits)"
+        return str_rep
+    
+
+@receiver(post_save, sender=User)
+def create_user_detail(sender, instance, created, **kwargs):
+    if created:
+        UserDetail.objects.create(user=instance)
+    return

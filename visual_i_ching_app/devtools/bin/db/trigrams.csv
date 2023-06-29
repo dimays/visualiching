@@ -1,0 +1,23 @@
+trigram_id,chinese_character,wade_giles_romanization,pinyin_romanization,english_translation,trigram_symbol,description,family_relationship,attribute,symbolic_animal,image_url,primal_dir,primal_season,inner_world_dir,inner_world_season,created_at,updated_at,deleted_at
+8,坤,k'un,kūn,The Receptive,☷,"The Receptive is the earth, the mother. It is cloth, a kettle, frugality, it is level, it is a cow with a calf, a large wagon, form, the multitude, a shaft. Among various kinds of soil, it is the black.",mother,yielding,cow,visual_i_ching_app/img/tri_receptive.png,N,Winter,SW,Summer-Autumn,2023-06-05 22:22:23.276882+00,2023-06-06 00:12:19.348188+00,
+7,艮,kên,gèn,Keeping Still,☶,"Keeping Still is the mountain; it is a bypath; it means little stones, doors and openings, fruits and seeds, eunuchs and watchmen, the fingers; it is the dog, the rat, and the various kinds of black-billed birds.
+Among trees it signifies the firm and gnarled.",third son,standstill,dog,visual_i_ching_app/img/tri_keeping_still.png,NW,Autumn-Winter,NE,Winter-Spring,2023-06-05 22:20:44.530031+00,2023-06-06 02:58:49.286035+00,
+6,坎,k'an,kǎn,The Abysmal,☵,"The Abysmal is water, ditches, ambush, bending and straightening out, bow and wheel.
+Among men it means the melancholy, those with sick hearts, those with earache.
+It is the blood sign; it is red.
+Among horses it means those with beautiful backs, those with wild courage, those which let their heads hang, those with thin hoofs, those which stumble.
+Among chariots it means those with many defects.
+It is penetration, the moon.
+It means thieves.
+Among varieties of wood it means those which are firm and have much pith.",second son,dangerous,pig,visual_i_ching_app/img/tri_abysmal.png,W,Autumn,N,Winter,2023-06-05 22:19:02.033005+00,2023-06-06 02:59:03.555354+00,
+5,巽,sun,xùn,The Gentle,☴,"The Gentle is wood, wind, the eldest daughter, the guideline, work; it is the white, the long, the high; it is advance and retreat, the undecided, odor.
+Among men it means the gray-haired; it means those with broad foreheads; it means those with much white in their eyes; it means those close to gain, so that in the market they get threefold value. Finally, it is the sign of vehemence.",first daughter,penetrating,rooster,visual_i_ching_app/img/tri_gentle.png,SW,Summer-Autumn,SE,Spring-Summer,2023-06-05 22:16:57.21209+00,2023-06-25 03:38:42.404771+00,
+4,震,chên,zhèn,The Arousing,☳,"The Arousing is thunder, the dragon. It is dark yellow, it is a spreading out, a great road, the eldest son. It is decisive and vehement; it is bamboo that is green and young, it is reed and rush. 
+Among horses it signifies those which can neigh well, those with white hind legs, those which gallop, those with a star on the forehead. 
+Among useful plants it is the pod-bearing ones. Finally, it is the strong, that which grows luxuriantly.",first son,movement,dragon,visual_i_ching_app/img/tri_arousing.png,NE,Winter-Spring,E,Spring,2023-06-05 22:14:57.442716+00,2023-06-25 03:39:35.121558+00,
+3,離,li,lí,The Clinging,☲,"The Clinging is fire, the sun, lightning, the middle daughter. 
+It means coats of mail and helmets; it means lances and weapons. Among men it means the big-bellied.
+It is the sign of dryness. It means the tortoise, the crab, the snail, the mussel, the hawkbill tortoise.
+Among trees it means those which dry out in the upper part of the trunk.",second daughter,dependence,pheasant,visual_i_ching_app/img/tri_clinging.png,E,Spring,S,Summer,2023-06-05 22:11:10.43001+00,2023-06-06 02:59:16.974188+00,
+2,兌,tui,duì,The Joyous,☱,"The Joyous is the lake, the youngest daughter; it is a sorceress; it is mouth and tongue. It means smashing and breaking apart; it means dropping off and bursting open. Among the kinds of soil it is the hard and salty. It is the concubine. It is the sheep.",third daughter,pleasure,sheep,visual_i_ching_app/img/tri_joyous.png,SE,Spring-Summer,W,Autumn,2023-06-05 22:09:08.85218+00,2023-06-06 02:59:20.305567+00,
+1,乾,ch'ien,qián,The Creative,☰,"The Creative is heaven. It is round, it is the prince, the father, jade, metal, cold, ice; it is deep red, a good horse, an old horse, a lean horse, a wild horse, tree fruit.",father,strong,horse,visual_i_ching_app/img/tri_creative.png,S,Summer,NW,Autumn-Winter,2023-06-05 22:05:13.663436+00,2023-06-06 02:59:23.514591+00,

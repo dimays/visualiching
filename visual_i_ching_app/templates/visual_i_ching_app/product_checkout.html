@@ -1,0 +1,44 @@
+{% load static %}
+<div class="container">
+    <div class="row text-center">
+        {% if price_id == price_id_1 %}
+        <h5>1 Credit for $1</h5>
+        <div class="my-3 px-5">
+            <img class="img-fluid" src="{% static 'visual_i_ching_app/img/credits_1.png' %}" alt="1 Credit">
+        </div>
+        {% elif price_id == price_id_2 %}
+        <h5>10 Credits for $5</h5>
+        <p class="text-muted"><i>$0.50 per credit</i></p>
+        <div class="my-3 px-5">
+            <img class="img-fluid" src="{% static 'visual_i_ching_app/img/credits_2.png' %}" alt="10 Credits">
+        </div>
+        {% elif price_id == price_id_3 %}
+        <h5>50 Credits for $10</h5>
+        <p class="text-muted"><i>$0.20 per credit</i></p>
+        <div class="my-3 px-5">
+            <img class="img-fluid" src="{% static 'visual_i_ching_app/img/credits_3.png' %}" alt="50 Credits">
+        </div>
+        {% elif price_id == price_id_4 %}
+        <h5>200 Credits for $20</h5>
+        <p class="text-muted"><i>$0.10 per credit</i></p>
+        <div class="my-3 px-5">
+            <img class="img-fluid" src="{% static 'visual_i_ching_app/img/credits_4.png' %}" alt="200 Credits">
+        </div>
+        {% elif price_id == price_id_5 %}
+        <h5>1,000 Credits for $50</h5>
+        <p class="text-muted"><i>$0.05 per credit</i></p>
+        <div class="my-3 px-5">
+            <img class="img-fluid" src="{% static 'visual_i_ching_app/img/credits_5.png' %}" alt="1,000 Credits">
+        </div>
+        {% else %}
+        <p>Price ID '{{ price_id }}' not found.</p>
+        {% endif %}
+    </div>
+    <p class="text-center"><small>Click the button below to purchase your credits on Stripe.</small></p>
+    <div class="text-center">
+        <form method="post" role="checkout">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success" formaction="{% url 'visual-i-ching-app-product-checkout' %}?price_id={{ price_id }}" data-bind-href="pricing">Purchase on Stripe</button>
+        </form>
+    </div>
+</div>

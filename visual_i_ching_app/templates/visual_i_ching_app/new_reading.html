@@ -1,0 +1,113 @@
+{% extends 'visual_i_ching_app/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <h1 class="display-4 serif-text">Consult the I Ching</h1>
+        <p class="text-muted">Consult the I Ching for a visual reading, use AI to assist in interpreting the text with your provided prompt.</p>
+    </div>
+    <hr>
+    <form method="post">
+        <div class="row my-3">
+            <h3 class="display-6 serif-text">Step 1: Your Prompt</h3>            
+            {% csrf_token %}
+            <p>Reflect on your intentions and pose a question to the I Ching.</p>
+            {{ form.prompt|as_crispy_field }}
+        </div>
+        <div class="row">
+            <div class="col-lg-4 my-3">
+                <h3 class="display-6 serif-text">Step 2: The Lines</h3>
+                <p>Virtually throw coins to generate a reading, or perform your own divination practice and enter the values for each line manually.</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="line_method" id="throw_coins" value="throw_coins" checked>
+                    <label class="form-check-label" for="throw_coins">
+                        Virtually Throw Coins
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="line_method" id="enter_lines" value="enter_lines">
+                    <label class="form-check-label" for="enter_lines">
+                        Manually Enter Lines
+                    </label>
+                </div>
+                <div id="line_choices" class="my-3" style="display: none;">
+                    {{ form.line_6|as_crispy_field }}
+                    {{ form.line_5|as_crispy_field }}
+                    {{ form.line_4|as_crispy_field }}
+                    {{ form.line_3|as_crispy_field }}
+                    {{ form.line_2|as_crispy_field }}
+                    {{ form.line_1|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-lg-4 my-3">
+                <h3 class="display-6 serif-text">Step 3: AI Assist</h3>
+                <p>Use the power of AI to assist in interpreting the text of the I Ching specifically for your prompt.</p>
+                {% if current_credits != 0 %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="ai-assist-checkbox" name="ai_assist_checkbox" value="checked" checked>
+                    <label class="form-check-label" for="ai-assist-checkbox">
+                        Enable AI Assistance
+                        <small class="text-secondary">(costs 1 credit)</small>
+                    </label>
+                </div>
+                {% else %}
+                <p class="text-center text-muted"><small>You have no credits available. Buy more to get AI assistance!</small></p>
+                <div class="text-center">
+                    <a href="{% url 'visual-i-ching-app-purchase-credits' %}" class="btn btn-primary btn-lg" role="button">Buy Credits</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-4 my-3">
+                <h3 class="display-6 serif-text">Step 4: Complete</h3>
+                <div class="text-center my-3">
+                    <button type="submit" class="btn btn-primary btn-lg my-2" name="save_view" id="save-view-btn" data-bs-toggle="modal" data-bs-target="#ai-modal" disabled>Save & View</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="ai-modal" tabindex="-1" aria-labelledby="ai-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title serif-text" id="ai-modal-label">Interpreting the situation...</h5>
+                    <div class="clearfix">
+                        <div class="spinner-border float-end" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid" src="{% static 'visual_i_ching_app/img/interpretation_progress.png' %}">
+                    <p class="text-center text-muted my-2"><i>Please wait while your reading is completed.</i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const lineMethodRadio = document.querySelectorAll('input[name="line_method"]');
+            const lineChoices = document.getElementById('line_choices');
+            const promptInput = document.querySelector('#id_prompt');
+            const saveViewBtn = document.querySelector('#save-view-btn');
+    
+            lineMethodRadio.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    if (radio.value === 'enter_lines') {
+                        lineChoices.style.display = 'block';
+                    } else {
+                        lineChoices.style.display = 'none';
+                    }
+                });
+            });
+    
+            promptInput.addEventListener('input', function () {
+                saveViewBtn.disabled = promptInput.value.trim() === '';
+            });
+
+        });
+    </script>
+{% endblock %}

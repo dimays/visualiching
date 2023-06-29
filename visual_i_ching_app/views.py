@@ -163,11 +163,7 @@ def payment_successful(request):
     line_items = stripe.checkout.Session.list_line_items(checkout_session_id, limit=1)
     price_id = line_items['data'][0]['price']['id']
 
-    user_detail = UserDetail.objects.get(user=user)
     credit_bundle = CreditBundle.objects.get(stripe_price_id=price_id)
-
-    user_detail.current_credits += credit_bundle.num_credits
-    user_detail.save()
 
     CreditsService.add_credits(
         user, 

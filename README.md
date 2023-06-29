@@ -121,9 +121,10 @@ python manage.py createsuperuser
 
 ### 8. Pre-populate your dev database with dev dummy data, including Users, Credits, Readings, and all the core data models (Hexagrams, HexagramLines, Trigrams, Line Types)
 
-```
-python visual_i_ching_app/devtools/add_dummy_data.py
-```
+a. Load data from the .csv files in visual_i_ching_app/devtools/bin/db/
+b. Load dummy data into the remaining tables
+
+*Note: We are in the process of developing a script to do this for you (stay tuned), but if you're eager to contribute you can get started right away!*
 
 
 ### 9. Collect static files to serve up locally

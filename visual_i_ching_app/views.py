@@ -238,6 +238,12 @@ class ReadingListView(ListView):
     context_object_name = 'readings'
     ordering = ['-created_at']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user_id = self.request.user.id
+        queryset = queryset.filter(user_id=user_id)
+        return queryset
+
 # View Single Reading
 @method_decorator(login_required, name='dispatch')
 class ReadingDetailView(DetailView):

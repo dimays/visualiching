@@ -176,15 +176,9 @@ def payment_successful(request):
 
 @login_required
 def payment_cancelled(request):
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    checkout_session_id = request.GET.get('session_id', None)
-    UserPayment.objects.create(
-        user=request.user,
-        is_success=False,
-        stripe_checkout_id=checkout_session_id
-        )
-    
-    return render(request, 'visual_i_ching_app/payment_cancelled.html')
+    messages.info(request, "Your payment has been cancelled.")
+
+    return render(request, 'visual_i_ching_app/purchase_credits.html')
 
 @csrf_exempt
 def stripe_webhook(request):

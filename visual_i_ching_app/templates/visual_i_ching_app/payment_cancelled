@@ -1,9 +1,0 @@
-{% extends 'visual_i_ching_app/base.html' %}
-{% load static %}
-
-{% block content %}
-<div class="container my-5">
-    <h1 class="display-4 serif-text">Your order was cancelled</h1>
-    <p>We're sorry, but your order has been cancelled by our payment provider.</p>
-</div>
-{% endblock %} 

@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.http import HttpResponse
-from visual_i_ching_app.models import Hexagram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle, UserCreditHistory
+from visual_i_ching_app.models import Hexagram, Trigram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle, UserCreditHistory
 from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm
 from visual_i_ching_app.services import AIService, CreditsService
 from random import randint
@@ -63,12 +63,12 @@ def about(request):
     current_credits = user_details[0]
     purchase_btn_text = user_details[1]
 
-    hexagrams = Hexagram.objects.all()
+    trigrams = Trigram.objects.all()
 
     context = {
         "current_credits": current_credits,
         "purchase_btn_text": purchase_btn_text,
-        "hexagrams": hexagrams
+        "trigrams": trigrams
     }
 
     return render(request, 'visual_i_ching_app/about.html', context=context)

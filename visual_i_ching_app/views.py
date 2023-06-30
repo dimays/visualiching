@@ -178,7 +178,7 @@ def payment_successful(request):
 def payment_cancelled(request):
     messages.info(request, "Your payment has been cancelled.")
 
-    return render(request, 'visual_i_ching_app/purchase_credits.html')
+    return purchase_credits(request)
 
 @csrf_exempt
 def stripe_webhook(request):

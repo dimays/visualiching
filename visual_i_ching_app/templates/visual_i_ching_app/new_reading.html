@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-lg-4 my-3">
                 <h3 class="display-6 serif-text">Step 2: The Lines</h3>
-                <p>Virtually throw coins to generate a reading, or perform your own divination practice and enter the values for each line manually.</p>
+                <p>Virtually throw coins to generate a reading, or perform your own divination practice (such as <a href="{% url 'visual-i-ching-app-about' %}#coin-method-header">coins</a> or <a href="{% url 'visual-i-ching-app-about' %}#yarrow-stalks-method-header">yarrow stalks</a>) and enter the values for each line manually.</p>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="line_method" id="throw_coins" value="throw_coins" checked>
                     <label class="form-check-label" for="throw_coins">
@@ -42,6 +42,7 @@
             </div>
             <div class="col-lg-4 my-3">
                 <h3 class="display-6 serif-text">Step 3: AI Assist</h3>
+                <h5><span class="badge bg-secondary rounded-pill">Optional</span></h5>
                 <p>Use the power of AI to assist in interpreting the text of the I Ching specifically for your prompt.</p>
                 {% if current_credits != 0 %}
                 <div class="form-check">

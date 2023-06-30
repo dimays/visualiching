@@ -16,25 +16,26 @@
     </div>
     {% endif %}
     <div class="row">
+        <h3 id="image-carousel-header" class="serif-text">Visually Engaging Readings</h3>
         <div id="carouselHexagrams" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                {% for hexagram in hexagrams %}
-                {% if hexagram.hexagram_id == 1 %}
+                {% for trigram in trigrams %}
+                {% if trigram.trigram_id == 1 %}
                     <div class="carousel-item active">
                 {% else %}
                     <div class="carousel-item">        
                 {% endif %}
-                        <img src="{% static hexagram.image_url %}" class="d-block w-100" alt="image of hexagram '{{ hexagram.english_translation }}">
+                        <img src="{% static trigram.image_url %}" class="d-block w-100" alt="image of trigram '{{ trigram.english_translation }}">
                         <div class="carousel-caption d-block">
-                            <h1>{{ hexagram.chinese_character }}</h1>
-                            <h3 class="serif-text">{{ hexagram.english_translation }}</h3>
-                            <h1>{{ hexagram.hexagram_symbol }}</h1>
+                            <h1>{{ trigram.chinese_character }}</h1>
+                            <h3 class="serif-text">{{ trigram.english_translation }}</h3>
+                            <h1>{{ trigram.trigram_symbol }}</h1>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
-        <p class="text-center text-secondary my-1"><small>a unique watercolor painting for each hexagram</small></p>
+        <p class="text-center text-secondary my-1"><small>enhance your I Ching experience with a unique watercolor painting for each trigram and hexagram</small></p>
     </div>
     <div class="row mt-5">
         <h3 id="free-account-header" class="serif-text">Free Account Forever</h3>

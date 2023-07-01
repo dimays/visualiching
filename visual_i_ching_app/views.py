@@ -83,7 +83,9 @@ def redeem_credit_offer(request):
     else:
         messages.warning(request, "You have past credit activity and are not eligible for this credit offer.")
 
-    return redirect('visual-i-ching-app-my-account')
+    redirect_url = request.META.get('HTTP_REFERER', 'visual-i-ching-app-my-account')
+
+    return redirect(redirect_url)
 
 
 @login_required
@@ -235,6 +237,7 @@ class ReadingDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        no_credit_history = user_has_no_credit_history(self.request)
         reading = self.object
         prefaces = {
             '1': 'Line One',
@@ -264,6 +267,7 @@ class ReadingDetailView(DetailView):
         context['changing_lines'] = changing_lines
         context['current_credits'] = user_details.current_credits
         context['notes_form'] = ReadingNotesForm(initial={'notes': self.object.user_notes})
+        context['no_credit_history'] = no_credit_history
 
         return context
 

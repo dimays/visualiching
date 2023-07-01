@@ -4,8 +4,27 @@
 
 {% block content %}
     <div class="row">
-        <h2 class="display-4 serif-text mb-5">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
+        <h2 class="display-4 serif-text mb-4">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
         <p class="text-muted"><i>{{ reading.created_at|date:'n/j/y g:i a' }} UTC</i></p>
+        {% if user_owns_reading %}
+            <form method="POST" id="visibility-form" action="{% url 'visual-i-ching-app-reading-toggle-public' reading.reading_id %}">
+                {% csrf_token %}
+                {{ visibility_form }}
+                {% if reading.is_public %}
+                    <p><small><i>This reading is currently public, and visible to anyone with the link.</i></small></p>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="toggle-visibility" name="toggle-visibility" checked>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Make Private</label>
+                    </div>
+                {% else %}
+                    <p><small><i>This reading is currently private, and only visible to you.</i></small></p>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="toggle-visibility" name="toggle-visibility">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Make Public</label>
+                    </div>
+                {% endif %}
+            </form>
+        {% endif %}
         <div class="rounded border shadow py-3 my-3">
             <div class="my-3">
                 <h3 class="serif-text text-center">My Prompt</h3>
@@ -19,7 +38,7 @@
                 <div class="px-3">
                     <p class="my-3"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
                 </div>
-                {% elif current_credits > 0 %}
+                {% elif user.is_authenticated and current_credits > 0 %}
                 <div class="text-center my-3">
                     <form method="POST" action="{% url 'visual-i-ching-app-update-interpretation' reading.reading_id %}">
                         {% csrf_token %}
@@ -47,12 +66,18 @@
                 <div class="px-3">
                     <p class="my-3"><i>{{ reading.user_notes|linebreaks }}</i></p>
                 </div>
-                <div class="text-center my-3">
-                    <a href="#" class="btn btn-secondary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Edit Notes</a>
-                </div>
-                {% else %}
+                    {% if user_owns_reading %}
+                    <div class="text-center my-3">
+                        <a href="#" class="btn btn-secondary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Edit Notes</a>
+                    </div>
+                    {% endif %}
+                {% elif user_owns_reading %}
                 <div class="text-center my-3">
                     <a href="#" class="btn btn-primary btn-lg" role="button" data-bs-toggle="modal" data-bs-target="#notesModal">Add Notes</a>
+                </div>
+                {% else %}
+                <div class="px-3">
+                    <p class="my-3"><i>This reading has no user notes yet.</i></p>
                 </div>
                 {% endif %}
             </div>
@@ -425,4 +450,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Handle toggle switch change event
+        document.getElementById('toggle-visibility').addEventListener('change', function() {
+            document.getElementById('visibility-form').submit();  // Submit the form when the toggle is changed
+        });
+    </script>
 {% endblock %}

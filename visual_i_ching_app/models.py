@@ -346,6 +346,10 @@ class Reading(models.Model):
         default=None,
         db_comment="Optional field resulting from the user generating an AI Interpretation for this reading"
         )
+    is_public = models.BooleanField(
+        default=False,
+        db_comment="Readings are private by default, but can be made public so that others can access the reading via its unique URL."
+        )
     created_at = models.DateTimeField(
         auto_now_add=True,
         db_comment="Time (in UTC) at which this record was created"

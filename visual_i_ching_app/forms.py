@@ -35,3 +35,6 @@ class ReadingForm(forms.Form):
 
 class ReadingNotesForm(forms.Form):
     notes = forms.CharField(label='Notes', widget=forms.Textarea)
+
+class ReadingVisibilityForm(forms.Form):
+    is_public = forms.BooleanField(required=False)

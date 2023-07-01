@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ReadingListView, ReadingDetailView, NewReadingView
+from .views import ReadingListView, ReadingDetailView, NewReadingView, ToggleReadingVisibilityView
 from . import views
 
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('delete_reading/<int:reading_id>/', views.delete_reading, name='visual-i-ching-app-delete-reading'),
     path('delete_account', views.delete_account, name='visual-i-ching-app-delete-account'),
     path('reading/<int:pk>/edit_notes/', views.update_notes, name='visual-i-ching-app-edit-notes'),
+    path('reading/<int:pk>/toggle-public/', ToggleReadingVisibilityView.as_view(), name='visual-i-ching-app-reading-toggle-public'),
     path('reading/<int:reading_id>/update_interpretation/', views.update_interpretation, name='visual-i-ching-app-update-interpretation'),
     path('redeem_credit_offer/', views.redeem_credit_offer, name='visual-i-ching-app-redeem-credit-offer'),
     path('purchase_credits/', views.purchase_credits, name='visual-i-ching-app-purchase-credits'),

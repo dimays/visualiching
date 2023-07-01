@@ -10,8 +10,12 @@
         <h1 id="description-header" class="serif-text">Embark on a Journey of Self-Discovery</h1>
         <p>VisualIChing invites you to embark on a journey of self-discovery, exploring the timeless wisdom of the I Ching through an interactive and visually captivating experience. May the profound insights of this ancient oracle inspire and guide you as you navigate the ever-changing currents of life.</p>
         <p>Begin your exploration of the I Ching with VisualIChing today and uncover the deep well of wisdom that awaits you.</p>
-        <div class="text-center my-5">
+        <div class="text-center my-4">
             <a href="{% url 'register' %}" class="btn btn-primary btn-lg" role="button">Sign Up For Free</a>
+        </div>
+        <div class="text-center">
+            <p><small><i>Already have an account?</i></small></p>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg" role="button">Login</a>
         </div>
     </div>
     {% endif %}
@@ -23,7 +27,7 @@
                 {% if trigram.trigram_id == 1 %}
                     <div class="carousel-item active">
                 {% else %}
-                    <div class="carousel-item">        
+                    <div class="carousel-item">
                 {% endif %}
                         <img src="{% static trigram.image_url %}" class="d-block w-100" alt="image of trigram '{{ trigram.english_translation }}">
                         <div class="carousel-caption d-block">

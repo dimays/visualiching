@@ -7,6 +7,8 @@ LINE_TYPE_7 = LineType.objects.get(line_value=7)
 LINE_TYPE_8 = LineType.objects.get(line_value=8)
 LINE_TYPE_9 = LineType.objects.get(line_value=9)
 
+SAMPLE_PROMPTS = """I'm experiencing ... but I'm also thinking that ... What guidance do you have for me?"""
+
 LINE_CHOICES = [
     (LINE_TYPE_6.line_value, str(LINE_TYPE_6)),
     (LINE_TYPE_7.line_value, str(LINE_TYPE_7)),
@@ -15,7 +17,10 @@ LINE_CHOICES = [
 ]
 
 class ReadingForm(forms.Form):
-    prompt = forms.CharField(label='Prompt', widget=forms.Textarea)
+    prompt = forms.CharField(
+        label='Prompt', 
+        widget=forms.Textarea(attrs={'placeholder':SAMPLE_PROMPTS})
+        )
     line_6 = forms.ChoiceField(choices=LINE_CHOICES, label='Line 6')
     line_5 = forms.ChoiceField(choices=LINE_CHOICES, label='Line 5')
     line_4 = forms.ChoiceField(choices=LINE_CHOICES, label='Line 4')

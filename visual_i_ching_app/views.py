@@ -216,6 +216,7 @@ class ReadingListView(ListView):
     template_name = 'visual_i_ching_app/my_readings.html'
     context_object_name = 'readings'
     ordering = ['-created_at']
+    paginate_by = 5
 
     def get_queryset(self):
         queryset = super().get_queryset()

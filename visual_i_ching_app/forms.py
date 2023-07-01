@@ -7,7 +7,7 @@ LINE_TYPE_7 = LineType.objects.get(line_value=7)
 LINE_TYPE_8 = LineType.objects.get(line_value=8)
 LINE_TYPE_9 = LineType.objects.get(line_value=9)
 
-SAMPLE_PROMPTS = """I'm experiencing ... but I'm also thinking that ... What guidance do you have for me?"""
+SAMPLE_PROMPTS = """How can I find work-life balance? When is the right time for a difficult conversation? What should I have for lunch today?"""
 
 LINE_CHOICES = [
     (LINE_TYPE_6.line_value, str(LINE_TYPE_6)),

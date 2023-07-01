@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django.http import HttpResponse
 from visual_i_ching_app.models import Hexagram, Trigram, HexagramLine, LineType, Reading, UserDetail, UserPayment, CreditBundle, UserCreditHistory
-from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm
+from visual_i_ching_app.forms import ReadingForm, ReadingNotesForm, ReadingVisibilityForm
 from visual_i_ching_app.services import AIService, CreditsService
 from random import randint
 
@@ -22,23 +22,27 @@ def throw_coins():
     return value
 
 def get_user_details(request):
-    current_user_id = request.user.id
+    if request.user.is_authenticated:
+        current_user_id = request.user.id
 
-    try:
-        user_details = UserDetail.objects.get(user_id=current_user_id)
-        credit_cnt = user_details.current_credits
+        try:
+            user_details = UserDetail.objects.get(user_id=current_user_id)
+            credit_cnt = user_details.current_credits
 
-        if credit_cnt == 1:
-            current_credits = "1 credit"
-        else:
-            current_credits = f"{credit_cnt} credits"
+            if credit_cnt == 1:
+                current_credits = "1 credit"
+            else:
+                current_credits = f"{credit_cnt} credits"
 
-        if credit_cnt == 0:
+            if credit_cnt == 0:
+                purchase_btn_text = "Buy Credits"
+            else:
+                purchase_btn_text = "Buy More Credits"
+
+        except UserDetail.DoesNotExist:
+            current_credits = "0 credits"
             purchase_btn_text = "Buy Credits"
-        else:
-            purchase_btn_text = "Buy More Credits"
-
-    except UserDetail.DoesNotExist:
+    else:
         current_credits = "0 credits"
         purchase_btn_text = "Buy Credits"
 
@@ -209,7 +213,7 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
-# My Readings (view all, and only, your own readings)
+# my_readings/ My Readings (view all, and only, your own readings)
 @method_decorator(login_required, name='dispatch')
 class ReadingListView(ListView):
     model = Reading
@@ -224,22 +228,27 @@ class ReadingListView(ListView):
         queryset = queryset.filter(user_id=user_id)
         return queryset
 
-# View Single Reading
-@method_decorator(login_required, name='dispatch')
+# reading/<reading_id> View Single Reading
 class ReadingDetailView(DetailView):
     model = Reading
     template_name = 'visual_i_ching_app/reading.html'
 
     def dispatch(self, request, *args, **kwargs):
         reading = self.get_object()
-        if request.user.id != reading.user.id:
-            raise PermissionDenied
+
+        if not request.user.is_authenticated:
+            if not reading.is_public:
+                raise PermissionDenied
+        else:
+            if not reading.is_public and request.user != reading.user:
+                raise PermissionDenied
+
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         no_credit_history = user_has_no_credit_history(self.request)
-        reading = self.object
+        reading = self.get_object()
         prefaces = {
             '1': 'Line One',
             '2': 'Line Two',
@@ -248,7 +257,9 @@ class ReadingDetailView(DetailView):
             '5': 'Line Five',
             '6': 'Live Six'
         }
-        user_details = UserDetail.objects.get(user_id=self.request.user.id)
+        
+        user_id = self.request.user.id if self.request.user.is_authenticated else None
+        user_details = UserDetail.objects.filter(user_id=user_id).first()
 
         changing_lines = []
         idx = 0
@@ -266,13 +277,14 @@ class ReadingDetailView(DetailView):
             context['fc_interpretation'] = reading.starting_hexagram.full_change_interpretation
 
         context['changing_lines'] = changing_lines
-        context['current_credits'] = user_details.current_credits
-        context['notes_form'] = ReadingNotesForm(initial={'notes': self.object.user_notes})
+        context['current_credits'] = user_details.current_credits if user_details else 0
+        context['notes_form'] = ReadingNotesForm(initial={'notes': reading.user_notes})
         context['no_credit_history'] = no_credit_history
+        context['user_owns_reading'] = self.request.user.id == reading.user.id if user_id else False
 
         return context
 
-# Create New Reading
+# new_reading/ Create New Reading
 @method_decorator(login_required, name='dispatch')
 class NewReadingView(View):
     template_name = 'visual_i_ching_app/new_reading.html'
@@ -366,6 +378,25 @@ class NewReadingView(View):
         }
         
         return render(request, self.template_name, context)
+
+# reading/<reading_id> Form Submission for updating Public/Private
+class ToggleReadingVisibilityView(View):
+    def post(self, request, pk):
+        reading = get_object_or_404(Reading, reading_id=pk)
+        form = ReadingVisibilityForm(request.POST)
+        
+        if form.is_valid():
+            reading.is_public = not reading.is_public
+            reading.save()
+        
+            if reading.is_public:
+                messages.success(request, 'This reading is now publicly visible.')
+            else:
+                messages.success(request, 'This reading is now private.')
+        
+            return redirect('visual-i-ching-app-reading', pk=reading.reading_id)
+
+        return redirect('visual-i-ching-app-reading', pk=reading.reading_id)
 
 # Delete Reading
 @login_required

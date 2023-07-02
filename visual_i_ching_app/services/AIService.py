@@ -73,8 +73,9 @@ showcase as an interpretation of this reading on a website.
 the provided reading details when explaining your interpretation of \
 the reading.
 4. Your response MUST NOT contain any unnecessary decorators (such \
-as "Dear reader,") or filler words and MUST ONLY contain the \
-critical content of the interpretation.
+as "Dear reader,")
+5. Your response MUST NOT contain any headers (such as "Summary") \
+and should contain only paragraphs of content.
 """
 
 UNCHANGING_HEX = """

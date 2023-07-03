@@ -5,7 +5,7 @@
 {% block content %}
     <div class="row">
         <h2 class="display-4 serif-text mb-4">Reading on {{ reading.created_at|date:'n/j/y' }}</h2>
-        <p class="text-muted"><i>{{ reading.created_at|date:'n/j/y g:i a' }} UTC</i></p>
+        <p class="text-muted"><i>{{ reading.user.username }} | {{ reading.created_at|date:'g:ia' }} UTC</i></p>
         {% if user_owns_reading %}
             <form method="POST" id="visibility-form" action="{% url 'visual-i-ching-app-reading-toggle-public' reading.reading_id %}">
                 {% csrf_token %}

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <h1 class="display-4 serif-text">{{ user.username }}'s Readings</h1>
+    <h1 class="display-4 serif-text">My Readings</h1>
     {% if not readings %}
         <p><i>You have no readings yet...</i></p>
         <div class="text-center">
@@ -13,44 +13,37 @@
     {% for reading in readings %}
     <div class="card my-5 shadow">
         <div class="card-body">
-            <h4 class="card-title serif-text mb-3">Reading on {{ reading.created_at|date:'n/j/y' }}</h4>
+            <h4 class="card-title serif-text mb-3">Reading on {{ reading.created_at|date:'n/j/y' }} {% if reading.is_public %}<span class="badge bg-info rounded-pill">Public</span>{% endif %}</h4>
             <p class="text-muted"><i><small>{{ reading.created_at|date:'n/j/y g:i a' }} UTC</small></i></p>
             <h6 class="serif-text">My Prompt</h6>
             <p class="card-text"><i>{{ reading.prompt|linebreaks }}</i></p>
             <hr>
-            {% if reading.gpt_interpretation %}
-            <h6 class="serif-text">AI Interpretation</h6>
-            <p class="card-text"><i>{{ reading.gpt_interpretation|linebreaks }}</i></p>
-            <hr>
-            {% endif %}
-            {% if reading.user_notes %}
-            <h6 class="serif-text">My Notes</h6>
-            <p class="card-text"><i>{{ reading.user_notes|linebreaks }}</i></p>
-            <hr>
-            {% endif %}
             <div class="container">
-                <div class="row">
+                <div class="row text-center">
                     {% if reading.resulting_hexagram %}
-                    <div class="col-md-2"></div>
-                    <div class="col-md-4">
-                        <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3" alt="{{ reading.starting_hexagram.english_translation }}">
-                        <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
-                        <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
+                    <div class="col-md-2 mb-3"></div>
+                    <div class="col-md-4 mb-3 ">
+                        <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3" alt="{{ reading.starting_hexagram.english_translation }}">                        
+                        <h3 class="serif-text my-2">Initial Hexagram</h3>
+                        <h5 class="serif-text">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
+                        <h1>{{ reading.starting_hexagram.hexagram_symbol }}</h1>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <img src="{% static reading.resulting_hexagram.image_url %}" class="rounded img-fluid my-3" alt="{{ reading.resulting_hexagram.english_translation }}">
-                        <h5 class="serif-text text-center">{{ reading.resulting_hexagram.chinese_character }} {{ reading.resulting_hexagram.pinyin_romanization }} / {{ reading.resulting_hexagram.english_translation }}</h5>
-                        <h1 class="text-center">{{ reading.resulting_hexagram.hexagram_symbol }}</h1>
+                        <h3 class="serif-text my-2">Resulting Hexagram</h3>
+                        <h5 class="serif-text">{{ reading.resulting_hexagram.chinese_character }} {{ reading.resulting_hexagram.pinyin_romanization }} / {{ reading.resulting_hexagram.english_translation }}</h5>
+                        <h1>{{ reading.resulting_hexagram.hexagram_symbol }}</h1>
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-2 mb-3"></div>
                     {% else %}
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3"></div>
+                    <div class="col-md-4 mb-3">
                         <img src="{% static reading.starting_hexagram.image_url %}" class="rounded img-fluid my-3" alt="{{ reading.starting_hexagram.english_translation }}">
-                        <h5 class="serif-text text-center">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
-                        <h1 class="text-center">{{ reading.starting_hexagram.hexagram_symbol }}</h1>
+                        <h3 class="serif-text my-2">Unchanging Hexagram</h3>
+                        <h5 class="serif-text">{{ reading.starting_hexagram.chinese_character }} {{ reading.starting_hexagram.pinyin_romanization }} / {{ reading.starting_hexagram.english_translation }}</h5>
+                        <h1>{{ reading.starting_hexagram.hexagram_symbol }}</h1>
                     </div>
-                    <div class="col-md-4"></div>
+                    <div class="col-md-4 mb-3"></div>
                     {% endif %}
                 </div>
             </div>

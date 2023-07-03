@@ -368,10 +368,15 @@ class Reading(models.Model):
     class Meta:
         db_table = "readings"
         db_table_comment = "A record for each reading prepared by a user"
-        ordering = ['user', '-created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
-        str_rep = f"{self.user.username}'s Reading: {self.prompt}"
+        if self.is_public:
+            desc = f"public reading at {self.created_at}: {self.prompt}"
+        else:
+            desc = f"private reading at {self.created_at}"
+
+        str_rep = f"{self.user.username} | {desc}"
         return str_rep
     
 

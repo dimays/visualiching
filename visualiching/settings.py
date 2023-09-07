@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users_app',
     'crispy_forms',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
     'crispy_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',

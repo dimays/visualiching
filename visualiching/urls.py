@@ -2,7 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from users_app import views as user_views
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap
 
+sitemaps = {
+    "static": StaticViewSitemap,
+}
 
 urlpatterns = [
     path('', include('visual_i_ching_app.urls')),
@@ -14,6 +19,12 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='users_app/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users_app/password_reset_complete.html'), name='password_reset_complete'),
     path('admin/', admin.site.urls),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
 ]
 
 handler404 = "visual_i_ching_app.views.page_not_found_view"
